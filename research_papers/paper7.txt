@@ -1,0 +1,1517 @@
+Journal of King Saud University Computer and Information Sciences (2025) 37:29
+https://doi.org/10.1007/s44443-025-00012-7
+ORIGINAL PAPER
+Multi-party reversible data hiding in shared medical images based
+on texture-guided hierarchical quantization coding
+Wenbo Wan1
+· Haina Wang1 · Lingchen Gu1 · Yannan Ren2 · Jing Li3 · Lili Meng1 · Jiande Sun1
+Received: 11 September 2024 / Accepted: 20 January 2025 / Published online: 24 April 2025
+© The Author(s) 2025
+Abstract
+In recent years, the advancement of smart healthcare has heightened concerns over medical information privacy. Reversible
+data hiding technology has been applied to medical images to ensure both images and patient data remain secure and
+tamper-free. In this paper, we propose a novel multi-party reversible data hiding scheme based on texture-guided hierarchical
+quantization coding for medical information security and privacy. The core of our approach is a novel Texture-Guided
+Hierarchical Quantization Coding (TGHQC) method, which can leverage the texture features of pixels to guide the hierarchical
+quantization coding process, thereby increasing the vacated room and enhancing embedding capacity. In addition, based on
+TGHQC, we further propose a multiple embedding method that not only supports embedding various types of data but also
+maximizes embedding efﬁciency while ensuring information security. Finally, we present a hierarchical sharing multi-party
+management framework that integrates TGHQC with the new embedding method, allowing hospitals to access patient privacy
+information and medical images only with explicit patient authorization. Our multi-party reversible hiding method effectively
+safeguards patient privacy and ensures secure storage and access to information within medical systems. Experimental results
+demonstrate the scheme’s superior embedding capacity and lossless reconstruction.
+Keywords Healthcare privacy · Medical image · Reversible data hiding · Secret image sharing ·
+Hierarchical quantization encoding
+B Wenbo Wan
+wanwenbo@sdnu.edu.cn
+Haina Wang
+wsgzya_h@163.com
+Lingchen Gu
+lingchengu@sdnu.edu.cn
+Yannan Ren
+yannan_ren@163.com
+Jing Li
+lijingjdsun@sdu.edu.cn
+Lili Meng
+mengll83@hotmail.com
+Jiande Sun
+jiandesun@hotmail.com
+1
+School of Information Science and Engineering, Shandong
+Normal University, Jinan, China
+2
+School of Information Science and Electrical Engineering,
+Shandong Jiao Tong University, Jinan, China
+3
+School of Journalism and Communication, Shandong Normal
+University, Jinan, China
+1 Introduction
+With the rapid development of multimedia and internet tech-
+nology, and as human society swiftly advances toward an
+informationsociety,people’slivesareincreasinglyintegrated
+with the internet, driving transformative changes. In this
+information age, the healthcare industry has been profoundly
+impacted, with automated healthcare technologies progress-
+ing rapidly, giving rise to telemedicine and various medical
+management systems. Medical institutions are continuously
+establishing and reﬁning medical information management
+systems, with various types of medical data gradually becom-
+ing digitized. Digital medical management systems have
+signiﬁcantly improved the efﬁciency of managing, storing,
+and transmitting patient information, saving time and cost.
+However, this advancement also brings new challenges: med-
+ical information transmitted over networks is vulnerable to
+interception and tampering by malicious actors, leading to
+potential breaches of patient privacy and even misdiagno-
+sis. Additionally, the critical information embedded within
+medical images transmitted in telemedicine must be fully
+123
+29
+Page 2 of 17
+Journal of King Saud University Computer and Information Sciences (2025) 37 :29
+protected, while image quality must be maintained to enable
+accurate diagnosis. Therefore, the transmission of medi-
+cal images in telemedicine presents numerous challenges
+(Huang et al. 2024).
+Reversible Data Hiding (RDH), also known as lossless
+data hiding or reversible information hiding, is an innovative
+technology that allows secret information to be embedded
+in a plaintext carrier while ensuring that the carrier data
+can be perfectly restored once the embedded information
+is extracted. This technology is increasingly used with mul-
+timedia data, such as images, audio, and video. Common
+reversible data hiding algorithms include Difference Expan-
+sion (DE) (Tian 2003), Histogram Shifting (HS) (Ni et al.
+2006; Thodi and Rodríguez 2007), Prediction Error (PE)-
+based methods (Li et al. 2013), and Pixel Value Ordering
+(PVO)-based methods (Luo et al. 2010). These methods aim
+to maximize embedding capacity while preserving image
+quality, and they are widely applied in scenarios such as
+copyright protection, data management, and information ver-
+iﬁcation for multimedia content.
+However, medical images inherently carry a wealth of
+sensitive patient information, making privacy protection cru-
+cial. In addition, medical images come with various auxiliary
+information, such as patient identity, medical records, and
+diagnostic details. In this context, Reversible Data Hiding
+in Encrypted Images (RDHEI) (Zhang 2011; Huang et al.
+2016; Zhang 2012; Ma et al. 2013; Yin et al. 2022; Yu et al.
+2022; Yin et al. 2022; Yao et al. 2024; Yu et al. 2022; Yin
+et al. 2020) has emerged as a more suitable technology for
+transmitting and storing medical images. RDHEI was ﬁrst
+proposed by Zhang (2011). They encrypted an original image
+of size m × n by performing a difference operation with a
+random key, then divided the encrypted image into blocks of
+8×8 and embedded one pixel in each block, achieving a data
+embedding capacity of m×n
+64 . A random m ×n 01 matrix was
+generated and divided into two sets: S0, containing 0s, and
+S1, containing 1s. If the data to be embedded in each block
+was 0, the last three bits of S0 were ﬂipped according to the
+bit, while S1 remained unchanged, and vice versa.
+To improve data extraction accuracy, some modiﬁca-
+tions were introduced in subsequent research (Huang et al.
+2016), though these methods lacked separability between
+image recovery and data extraction. In response, Zhang
+et al. proposed a separable approach (Zhang 2012) that
+further optimized embedding space. Subsequently, other
+methods were proposed, with one of the most representa-
+tive approaches using a Median Edge Detector (MED) for
+pixel prediction (Ma et al. 2013). This approach calculates
+the difference between the predicted and original pixel val-
+ues, embedding data from the most to the least signiﬁcant
+bit. Additionally, auxiliary data to be embedded is Huffman
+encoded to enhance efﬁciency.
+To further enhance image transmission security, scientists
+have proposed combining Reversible Data Hiding (RDH)
+with Secret Sharing (SS), leading to the RDHSI method
+(Wu et al. 2018; Qin et al. 2021; Xiong et al. 2023; Weng
+et al. 2023; Chen et al. 2022; Yang et al. 2007; Chen et al.
+2019). This combination not only encrypts the image but also
+enables recovery in case of transmission errors. In Wu et al.
+(2018), the authors ﬁrst proposed using Shamir’s Secret Shar-
+ing (SS) (Thien and Lin 2002; Shamir 1979) for reversible
+information hiding, adopting methods such as difference
+expansion and histogram shifting. Since Shamir’s SS method
+cannot effectively handle pixel values greater than 251, scien-
+tists suggest using Galois Field GF(28) instead of GF(251)
+(Qin et al. 2021), allowing shared images to be recovered
+without redundant information.
+Multi-party Reversible Data Hiding (Chen et al. 2024)
+extends the RDHSI technique, enabling multiple participants
+to embed hidden information while sharing data, ensuring
+that the original data can be perfectly restored after extrac-
+tion. Most current reversible information hiding methods
+based on secret image sharing focus on evenly dividing the
+entire image, overlooking the distinct priorities of different
+parties (Chen et al. 2020). However, for different roles, cer-
+tain regions within an image may be of greater importance,
+and it may not always be necessary to extract the com-
+plete image. For instance, doctors may only need to access
+speciﬁclesionareas,whilehospitalsmayrequirecomprehen-
+sive diagnostic data. Medical images often contain highly
+sensitive patient information, which requires both privacy
+protection and content integrity during distribution, storage,
+and sharing to facilitate subsequent diagnosis and treatment.
+To address the privacy and data integrity risks of medical
+images in multi-party collaboration scenarios, this paper pro-
+poses a multi-party reversible data hiding scheme based on
+texture-guided hierarchical quantization coding. The scheme
+integrates hierarchical image sharing with a dual embedding
+mechanism, achieving high-capacity, secure management of
+medicalimagesformultipleparties.Additionally,thescheme
+featuresreversibilityandseparability,enablingdifferentroles
+to access data according to speciﬁc requirements. The main
+contributions of this paper are as follows:
+1. A multi-party reversible data hiding framework for
+healthcare systems is proposed to facilitate secure storage
+and access to images. The framework assigns different access
+levels to authorized parties, enabling them to extract secret
+data and related information from speciﬁc regions of the
+image. This method eliminates additional storage require-
+ments while ensuring secure access to secret data and images.
+By meeting the unique data needs of each party and protect-
+ing sensitive information, the scheme effectively safeguards
+patient privacy and data integrity.
+123
+Journal of King Saud University Computer and Information Sciences (2025) 37 :29
+Page 3 of 17
+29
+2. A texture-guided hierarchical quantization coding
+methodisproposed,whichadaptivelydeterminesblocktypes
+based on the texture features of pixel blocks and applies
+hierarchical quantization to difference information to reduce
+storage space. By dynamically adjusting coding strategies
+according to image content, this method optimizes embed-
+ding efﬁciency.
+3. A dual embedding mechanism is designed, with the
+level 1 embedding performed by the image owner, specif-
+ically embedding medical image metadata. The level 2
+embedding is carried out by data embedders, where patients
+and hospitals embed their respective information into cor-
+responding parts of the image. This embedding method
+signiﬁcantly increases embedding capacity while ensuring
+information security. Moreover, it allows the system to
+ﬂexibly meet diverse data access requirements, thereby safe-
+guarding data security and privacy.
+The remainder of this paper is organized as follows:
+Section2 introduces the relevant technologies of Secret Shar-
+ing (SS) and Reversible Data Hiding (RDH). Section3 details
+the proposed multi-party reversible data hiding scheme based
+on texture-guided hierarchical quantization coding. Section4
+discusses the experimental results. Section5 concludes the
+paper.
+2 Related work
+2.1 Secret sharing
+Secret sharing was proposed by researchers (Thien and Lin
+2002) to address common single point of failure issues and
+access control problems in key-based systems, preventing
+authorized personnel from disclosing secret information.
+This section will detail the basic concept of secret sharing to
+help readers understand the methodology used in this paper.
+A secret sharing scheme involves a two-phase access
+structure for a secret S, with a set of n authorized parties
+and a set of t participants. The secret S is divided into n
+sub-shares, which are distributed to n authorized parties for
+safekeeping. Any set of t participants can access the secret S.
+The secret sub-shares held by each authorized party do not
+contain any information about the original secret S. Even if
+the sub-shares of n −t authorized parties are compromised,
+the remaining t sub-shares can still be used to reconstruct the
+secret, ensuring the recovery of S is not affected. Secret shar-
+ing schemes utilize a two-phase access structure, effectively
+solving these issues and signiﬁcantly enhancing the security
+of data privacy protection.
+The polynomial-based (t, n) secret sharing algorithm pro-
+posed by Shamir is fundamental in the ﬁeld of secret sharing.
+The basic idea is to construct a set of polynomial equations
+over a ﬁnite ﬁeld F, using the secret S as the polynomial
+coefﬁcients to generate multiple encrypted shares. Secret
+receivers can recover the secret S by reconstructing the poly-
+nomial using some of the shares. This (t, n) secret sharing
+algorithm has three main advantages:
+1. At least t shared shares are needed to recover the secret
+S;
+2. No single share can reveal information about the secret
+S;
+3. It is fault-tolerant, allowing up to n −t shares to be lost
+or corrupted.
+Thien and Lin extended Shamir’s secret sharing scheme
+(Thien and Lin 2002) to the image domain by proposing a
+(t, n) threshold secret image sharing algorithm. In this algo-
+rithm, the pixel values of an image are used as polynomial
+coefﬁcients to generate shadow images, and at least t shadow
+images can be used to recover the original secret image using
+Lagrange interpolation polynomials.
+In this scheme, since some pixel values are truncated to
+250 before sharing, the recovered image is not identical to
+the original image. Therefore, this algorithm is not suitable
+for applications that require high accuracy in the recovered
+images and has certain limitations. To address this, Thien
+and Lin (2002) proposed a complementary scheme in which
+all pixel values greater than or equal to 250 are shared by
+splitting them into two values, resulting in an increase in the
+size of the generated shadow images.
+To solve the above problems, Yang et al. (2007) proposed
+using the Galois ﬁeld GF(28) instead of GF(251), recon-
+structing the original polynomials as follows:
+f j(x) = p j,1 + p j,2x + ... + p j,txt−1 mod g(x)
+(1)
+L j(x) =
+t
+t=1
+( f j(xi) ×
+
+0<k<t,k̸=i
+x −xk
+xi −xk
+mod g(x))
+(2)
+Where in (1) and (2), g(x) = x8 + x4 + x3 + x2 + 1;
+this approach enables lossless image reconstruction without
+additional pixels.
+2.2 RDH
+2.2.1 RDHEI
+Scientists have proposed innovative methods for reversible
+data hiding in encrypted images (RDHEI), utilizing various
+techniques to enhance embedding capacity, optimize image
+quality, and improve data security.
+Yin et al. (2022) proposed a RDHEI method based on pixel
+prediction and bit-plane compression. This method lever-
+ages pixel prediction to reduce data redundancy by predicting
+pixel values and calculating the error between the predicted
+and actual values. Regions with smaller errors are identiﬁed
+123
+29
+Page 4 of 17
+Journal of King Saud University Computer and Information Sciences (2025) 37 :29
+as embedding targets, optimizing the selection of embedding
+locations. Additionally, the method analyzes the distribution
+characteristics of bit planes in the image and compresses
+highly redundant bit planes to release more embedding space,
+thereby increasing embedding capacity without compromis-
+ing image quality. Encryption ensures data privacy, while
+the separability of embedded information from the image
+enhances security and ﬂexibility.
+Yao et al. (2024) introduced a RDHEI technique com-
+bining global compression of zero-valued high bit planes
+with block rearrangement. By globally compressing zero bits
+in high bit planes, the method releases substantial embed-
+ding space. Simultaneously, block rearrangement optimizes
+the distribution of embedded data, achieving higher embed-
+ding efﬁciency and stronger data integrity. Furthermore, this
+method ﬂexibly adjusts embedding strategies to signiﬁcantly
+improve the utilization of image embedding space while
+ensuring the preservation of the original data during image
+recovery.
+Yu et al. (2022) proposed a RDHEI method based on hier-
+archical embedding. This approach divides the embedding
+process into multiple levels, prioritizing regions with smaller
+prediction errors to minimize the impact on image visual
+quality. Additionally, the method introduces a hierarchical
+management mechanism, progressively embedding data and
+ﬂexibly embedding different types of information in various
+regions, improving data management efﬁciency. The hierar-
+chical embedding strategy ensures not only the reversibility
+of embedded data but also the independence of embedded
+information from the original content, providing reliable sup-
+port for multi-role data management.
+Yin et al. (2020) proposed a RDHEI method combining
+multi-MSB (most signiﬁcant bits) prediction with Huffman
+coding. This technique predicts multiple MSBs for each
+pixel and analyzes the differences between the predicted and
+actual values to reduce redundancy. Huffman coding is then
+used to efﬁciently compress these differences, further opti-
+mizing embedding capacity. This combination of multi-bit
+prediction and compression improves embedding efﬁciency
+while ensuring precise recovery of data and reducing stor-
+age overhead, making it suitable for applications requiring
+high-precision data recovery.
+Yu and Zhang (2023) proposed a method for reversible
+data hiding in encrypted images that combines secret sharing
+and hybrid coding. The approach uses bit-plane compression
+and difference expansion to optimize embedding efﬁciency
+and distributes embedded data across multiple shares for
+enhanced security. Secret sharing ensures that data recov-
+ery requires a minimum number of shares, protecting the
+integrity and conﬁdentiality of the embedded information.
+Despite the signiﬁcant technological advances of these
+methods, they also share some common limitations. The
+embedding capacity of these methods depends on the distri-
+bution of image content. For images with complex textures
+or high-frequency content, the lack of redundancy may result
+in reduced embedding capacity.
+2.2.2 SS-based RDH
+Scientists have proposed various reversible data hiding
+methods in encrypted images by integrating secret shar-
+ing techniques, focusing on improving embedding capacity,
+security, and data integrity.
+Wu et al. (2018) proposed a reversible data hiding method
+in encrypted images using secret sharing. By dividing the
+image into multiple shares, the data can be embedded
+and later recovered using a minimum number of shares.
+This method ensures data security, effectively protecting the
+integrity and conﬁdentiality of the embedded data, even if
+some shares are lost or compromised.
+Qin et al. (2021) improved the secret-sharing-based
+reversible data hiding method by employing mathemati-
+cal mechanisms in ﬁnite ﬁelds GF(q) and GF(28). Their
+approach enhances the efﬁciency of share distribution and
+utilization of image embedding space, increasing embed-
+ding capacity and recovery precision while maintaining data
+reversibility and privacy protection.
+Chen et al. (2020) introduced a secret-sharing-based
+reversible data hiding method in encrypted images designed
+for multiple data hiders. This method allows multiple hiders
+to simultaneously embed different information into the
+encrypted image while preserving the reversibility of the
+original image. By enabling multi-role share design, the
+method enhances the ﬂexibility and security of data man-
+agement.
+Hua et al. (2022) proposed a cipher-feedback-based secret
+sharing reversible data hiding method for encrypted images.
+By optimizing data distribution through a cipher-feedback
+mechanism, this method improves the robustness of embed-
+ded data against attacks and enhances the precision of image
+recovery. It is particularly suitable for applications requiring
+high security and embedding efﬁciency, such as healthcare
+and privacy protection.
+Despite the signiﬁcant advancements of these secret-
+sharing-based reversible data hiding methods, there are still
+some limitations. First, the utilization efﬁciency of embed-
+ding space requires further improvement, as some methods
+fail to fully exploit low-bit information or other potential
+redundancies in the image, resulting in underutilized embed-
+ding capacity. Second, from the perspective of embedding
+roles, these methods often assume single or limited roles for
+data embedding, lacking support for collaborative multi-role
+scenarios. For instance, in healthcare, patients, doctors, and
+hospitals may need to embed different types of data inde-
+pendently. However, current methods may face embedding
+conﬂictsbetweenrolesorfailtoﬂexiblymeetthesecurityand
+123
+Journal of King Saud University Computer and Information Sciences (2025) 37 :29
+Page 5 of 17
+29
+priority requirements of different roles. Additionally, the data
+separation mechanism between multiple roles needs opti-
+mization to prevent role privilege leakage or misuse of data.
+3 Proposed method
+In modern healthcare systems, the secure storage and man-
+agement of medical information remain important and
+complex issues. With the acceleration of digitalization, an
+increasing amount of medical information is stored and
+transmitted electronically, including patient identity infor-
+mation, medical history, diagnostic records, medical images,
+and more. The security of this data directly affects the pro-
+tection of patient privacy and the improvement of healthcare
+quality. However, as different types of medical informa-
+tion have varying levels of importance, and different regions
+within medical images also vary in signiﬁcance, it is essential
+to apply targeted, hierarchical protection to these data. For
+example, lesion areas (such as tumors or injuries) are espe-
+cially critical in diagnosis and treatment, requiring higher
+levels of security than other regions.
+Patient’s private information is the most sensitive part of
+medical data, usually including identity information (such
+as name, ID number, address) and medical history (like past
+disease records and treatment history). Unauthorized disclo-
+sure of this information could pose signiﬁcant privacy risks
+to patients, potentially impacting their social life and mental
+well-being. Therefore, private information should be under
+the strictest protection, and only accessible to the patient
+or authorized individuals. Based on this principle, private
+information should be held and managed by the patient them-
+selves, rather than by medical institutions or third parties, to
+minimize the risk of data leaks.
+Medical reports constitute another critical category of
+information, typically containing diagnostic results, treat-
+ment plans, and information about the attending physician.
+This information is crucial during the treatment process and
+directly impacts the formulation and execution of treatment
+strategies. Since medical reports are mainly used for commu-
+nication and management within medical institutions, they
+can be managed by hospitals. As the primary holders of med-
+ical reports, hospitals can, under authorization, provide these
+reports to doctors, patients, or other authorized parties, ensur-
+ing the smooth progression of medical processes.
+In practical healthcare applications, not all users require
+access to all types of medical information. When diagnosing,
+doctors typically only need to view speciﬁc areas of medical
+images, such as lesion areas, without needing access to the
+patient’s identity and other private information. This role-
+based hierarchical access strategy not only allows doctors
+to focus on disease-related information but also effectively
+reduces the risk of exposing sensitive information, minimiz-
+ing the possibility of privacy breaches. For example, during
+diagnosis, doctors only need to view the image data of the
+lesion area without knowing the patient’s personal back-
+ground or private information.
+To achieve secure and ﬂexible management of medical
+data access, we propose a reversible and separable multi-
+party healthcare framework to meet the distributed storage
+andsecureaccessneedsofmedicalinformationamongmulti-
+ple parties. The design of this framework is shown in Fig.1.
+In this framework, the primary authorized parties include
+the patient and the hospital. The patient holds their private
+Fig. 1 Proposed reversible and separable multi-party healthcare framework
+123
+29
+Page 6 of 17
+Journal of King Saud University Computer and Information Sciences (2025) 37 :29
+information and is responsible for protecting their identity
+information and medical history, while the hospital manages
+the medical report. This decentralized management approach
+not only protects patient privacy but also ensures effective
+management of diagnostic information by the medical insti-
+tution.
+The workﬂow of this framework is as follows: After the
+doctor completes the diagnosis, the hospital identiﬁes and
+marks the lesion areas in the medical image. The origi-
+nal medical image is then preprocessed and shared as n
+shares according to a threshold. During the sharing process, a
+series of medical image metadata, such as image generation
+device information, scanning parameters, and ﬁle format,
+are embedded in the redundant space of the polynomial
+coefﬁcients in binary form. Subsequently, the system server
+embeds the shared information of private data and medical
+reports into different parts of the medical image according to
+the framework. Assuming there are n cloud servers for data
+embedding, each cloud server obtains kp, one share of the
+image, one share of the patient’s private information, and one
+share of the medical report. Based on kp, each server knows
+the speciﬁc location for data embedding, and then proceeds
+to embed the data sequentially. The lesion area image data
+will contain the shared data of the patient’s private informa-
+tion, while the non-lesion area image data will contain the
+shared data of the medical report.
+Based on this mechanism, the patient holds the decryption
+keys for the lesion image and private information (such as ki1
+and ks1), while the hospital holds the decryption keys for the
+non-lesion image and medical report (such as ki2 and ks2).
+Duringtheimagerecoveryprocess,thepatienthasthehighest
+level of authority and can decrypt all information. Without
+the patient’s authorization, the hospital can only extract the
+non-lesion areas of the image and the diagnostic report, but
+cannot recover the complete image or the patient’s personal
+information, effectively protecting the patient’s privacy.
+Additionally, due to the reversible and separable nature of
+this framework, it supports the option of recovering only the
+image data when only the image is needed, without extract-
+ing the patient’s private information. For example, in research
+analysis, researchers may only need the image data for mod-
+eling purposes, without any patient identity information. In
+this scenario, the system ensures the anonymity of research
+data, further enhancing data security and compliance.
+This framework, based on a multi-party reversible data
+hiding strategy, not only strengthens the security of the
+healthcare information system but also provides an efﬁ-
+cient and ﬂexible solution for storing and managing medical
+images. The design meets the varied data access needs of dif-
+ferent roles, allowing patients, hospitals, doctors, and other
+stakeholders to access data according to their level of author-
+ity, thus achieving hierarchical management and protection
+of medical data. While safeguarding patient privacy, it opti-
+mizes the conﬁguration of access permissions and offers
+robust support for the security and control of healthcare infor-
+mation systems.
+3.1 Texture-guided hierarchical quantization coding
+This section provides a detailed introduction to the pro-
+posed Texture-Guided Hierarchical Quantization Coding
+(TGHQC). This method aims to maximize embedding
+efﬁciency for medical images by analyzing their texture
+characteristics and adaptively adjusting data encoding and
+storage strategies, while ensuring the security and integrity
+of the data. The core concept of TGHQC lies in leveraging
+texture-based classiﬁcation of image blocks and designing
+differentiated encoding approaches for different types of
+pixel blocks to optimize storage and embedding space uti-
+lization. TGHQC not only ensures the quality and integrity
+of medical image data during storage but also supports
+secure embedding and management of conﬁdential informa-
+tion by integrating with the multi-party framework described
+in Section3.1.
+3.1.1 Texture-aware adaptive difference generation
+Assume that I is an 8-bit original medical image with a size of
+M × N, which is divided into several non-overlapping w × l
+blocks. all blocks within image have three types of difference
+generation methods: prediction error (PE), median difference
+(MND), and maximum difference (MMD).
+To improve the performance and effectiveness of the
+algorithm, we automatically select the difference genera-
+tion method by evaluating the texture characteristics of pixel
+blocks. A uniﬁed formula is deﬁned based on the statisti-
+cal properties of image textures, which can accurately detect
+edge pixels in a given image using the Canny operator (Canny
+1986). For a given block, if it contains very sparse edge pix-
+els, it can be considered a smooth block, labeled as PE. On
+the other hand, if it contains many edge pixels, it means that
+this block has a lot of high-frequency energy and can be con-
+sidered a texture block, labeled as MND. If the edge pixel
+density is moderate, indicating that the area contains a con-
+siderable amount of edge information, it is labeled as MMD.
+Thus, blocks can be classiﬁed according to the density of
+edge pixels.
+As we know, the Canny operator is a very famous and
+powerful edge detector that can accurately detect edge pix-
+els in a given image. The images in the middle column of
+Fig.2 show the edge maps detected by the Canny detector.
+For a given block, if it contains very sparse edge pixels, it
+123
+Journal of King Saud University Computer and Information Sciences (2025) 37 :29
+Page 7 of 17
+29
+Fig. 2 Difference generation: (a) PE generation, (b) MND generation, (c) MMD generation
+can be considered a smooth block. On the other hand, if it
+contains many edge pixels, it means that this block has a lot
+of high-frequency energy and can be considered a texture
+block. Thus, blocks can be classiﬁed based on the density of
+edge pixels.
+Basedontheaboveanalysis,aparameternamededgepixel
+density ρedgel is deﬁned as
+ρedgel =
+
+edgel
+/(w × l)
+(3)
+where 
+edgel is the number of edge pixels in a given block
+within the edge map generated by the Canny operator, l is
+the length of block. The block type is determined by (4). We
+set α = 0.1 and β = 0.2. Figure2 shows the examples of the
+block classiﬁcation method:
+Block type =
+⎧
+⎪⎨
+⎪⎩
+PE,
+ρedgel ≤α
+MMD, α < ρedgel ≤β
+MND,
+ρedgel > β.
+(4)
+After classifying the pixel blocks, the corresponding dif-
+ferences need to be generated. The generation methods for
+various differences are as follows.
+PE Let ki, j represent the pixel value at position (i, j),
+where ki, j ∈[0, 255], i ∈[1, w], j ∈[1,l]. Due to the high
+correlation between adjacent pixels in the original image,
+these pixels can be predicted using a predictor based on their
+contextual pixels, such as the Median Edge Detection (MED)
+123
+29
+Page 8 of 17
+Journal of King Saud University Computer and Information Sciences (2025) 37 :29
+predictor. Let pi, j be the predicted value of ki, j. For the
+pixel located in the top-left corner of the original image, its
+predicted value is its actual pixel value.
+p1,1 = k1,1
+(5)
+For other pixels that are not in the top-left corner, they are
+predicted using the extended MED as follows:
+pi, j =
+⎧
+⎪⎪⎪⎪⎪⎪⎪⎪⎪⎪⎪⎨
+⎪⎪⎪⎪⎪⎪⎪⎪⎪⎪⎪⎩
+b,
+if i = 1 and 2 ≤j ≤l
+a,
+if 2 ≤i ≤w and j = 1
+max(a, b), if 2 ≤i ≤w, 2 ≤j ≤l,
+c ≤min(a, b)
+min(a, b),
+if 2 ≤i ≤w, 2 ≤j ≤l,
+c ≥max(a, b)
+a + b −c,
+otherwise
+(6)
+where a = ki−1, j, b = ki, j−1, c = ki−1, j−1. Then, the
+prediction error (PE) ei, j is calculated as:
+ei, j = ki, j −pi, j
+(7)
+where ei, j ∈[−255, 255]. Figure2 (a) shows the PE gener-
+ation process of the original pixel block.
+MND The sixteen pixel values within each block are ﬁrst
+ﬁltered, and a labeled pixel mp is selected so that it satisﬁes
+the condition in (8) and exchanges position with the ﬁrst pixel
+in the block. Figure2 (b) shows the MND generation process
+of the original pixel block.
+mp = min(max | mp −xn |), n = 1, 2, ..., w × l
+(8)
+where xn represents the n-th pixel value during the row-wise
+traversal of the pixel block.
+MMD Similartothegenerationofthelabeledpixelmp,the
+w ×l pixels within each block are ﬁrst ﬁltered, and according
+to (9), the maximum value among the w × l pixels is selected
+as the reference pixel maxp and is swapped with the ﬁrst
+pixel. Figure2 (c) shows the MMD generation process of the
+original pixel block.
+maxp = max(xn), n = 1, 2, ..., w × l
+(9)
+where xn represents the n-th pixel value during the row-wise
+traversal of the pixel block.
+3.1.2 Hierarchical quantization coding
+We designed Hierarchical quantization coding, combined
+with the texture-aware adaptive difference generation des-
+cribed in the previous section, to achieve maximum data
+embedding. After performing texture-aware adaptive differ-
+ence generation, the generated corresponding differences are
+converted into binary form, represented as the set of binary
+lengths Ldi . Then, based on these lengths, the elements in
+Ldi are divided into k levels, with the corresponding differ-
+ence length being Lk. The maximum value of k is clearly 7.
+Assuming a block has k levels; if k = 1, the block belongs to
+the original difference set Odi . If k = 2, and the difference
+lengths of the ﬁrst and second levels are 1 and 2 respectively,
+the block still belongs to Odi . All other cases are classiﬁed
+as partially shortened differences PSdi . For Odi blocks, no
+further processing is performed. However, for PSdi blocks,
+only the differences at the kth level are processed, assuming
+that all differences {dm} in the kth level have been obtained.
+The processing method for {dm} is shown in the following
+equation:
+d′
+m =
+	
+dm
+2n , dm mod 2 = 0
+dm−1
+2
+, dm mod 2 ̸= 0
+(10)
+Where dm ∈{dm};
+For dm, the operation described in (10) needs to be
+repeated n times, where n = Lk −Lk−1. For PSdi blocks,
+if n = 1 and the number of dm elements in the kth layer
+is too large, the encoded length may exceed the original
+length before encoding, which would defeat the purpose
+of hierarchical quantization coding. Based on experimen-
+tal veriﬁcation, we have established speciﬁc limits qn for
+the number of dm elements in the kth layer corresponding
+to different n values. If the number exceeds qn, hierarchical
+quantization coding should not be used, and Huffman coding
+should be attempted instead. The relevant speciﬁcations are
+shown in Table 1.
+While applying hierarchical quantization coding, we also
+encode the block differences using Huffman coding and com-
+paretheresultinglengthwiththatofhierarchicalquantization
+coding, selecting the method with the shortest encoding
+length and making the corresponding records. We generate
+PE, MND, MMD of the original image for individual dif-
+ference generation methods respectively, coding of the block
+level differences are generated according to the huffman cod-
+ing of the differences of image.
+While performing hierarchical quantization coding, we
+also generate a Huffman table for the difference values of
+the original blocks across the entire image according to
+Table 1 hierarchical
+quantization coding constraints
+n
+qn
+1
+1
+2
+3
+3
+5
+4
+6
+5
+7
+123
+Journal of King Saud University Computer and Information Sciences (2025) 37 :29
+Page 9 of 17
+29
+different block difference generation methods. Then, the cor-
+responding blocks are encoded. We compare the lengths of
+the hierarchical quantization coding encoding and the Huff-
+man encoding, select the shortest method, and record it.
+3.1.3 Block-level auxiliary information generation
+Theauxiliaryinformationwithinalltypesofblocksisdivided
+into two categories: Encoded Marking data(E M) and Dif-
+ference Sign recording data(DS). The encoded marking
+information is roughly divided into the following categories:
+Au = Ls || MS || L p || BM || n || num || Lm || F || Rp
+(11)
+1. Determine the embedding position Ls: This is used to
+ﬁnd the starting position for embedding secret data in the
+shared M P block, occupying 4 bits. This part is not involved
+in the encoding process.
+2.Mode selection informationMS: After selecting the
+optimal difference generation method, we need to use 2 bits
+to mark the chosen method: PE is ‘00’, MND is ‘01’, and
+MMD is ‘10’. After generating the differences, we perform
+TGHQCencoding. If thelengthof thedifferences encodedby
+Huffman is greater than that of TGHQC encoding, TGHQC
+encoding is used, and the auxiliary information is marked
+as ‘0’; otherwise, it is marked as ‘1’. Therefore, the total
+auxiliary information for mode selection is 3 bits.
+3. Mark pixel position L p: For the PE method, it is not
+necessary to mark pixel position information, so if the ﬁrst
+two bits of the extracted scheme choice information are ‘00’,
+L p can be ignored. For the other two block types, we deter-
+mine the position of the marked pixel mp or maxp within the
+block, ranging from ‘0000’ to ‘1111’, occupying 4 bits.
+4. Maximum difference bit count BM: The binary bit
+length of the maximum difference within the block is cal-
+culated and represented using 3 bits.
+5. n, num, Lm, and F: These four parts represent the
+information about the original differences and are introduced
+together. n indicates the number of cycles required for dm,
+andsincethemaximumvalueofn is6,itisﬁxedat3bits.num
+represents the number of elements in {dm}, and the maximum
+value of qn is 7, so it is also ﬁxed at 3 bits. Lm represents
+the speciﬁc positions of dm, where each dm is represented by
+4 bits, so Lm occupies num × 4 bits. F indicates whether
+each dm has a minus 1 operation in each cycle; if it does, F
+is 1, otherwise it is 0. The length of F is determined by n and
+num, with a total of n × num bits. Therefore, the length of
+this auxiliary information depends on the situation, and its
+length can be calculated as n + num + n × num bits.
+6. Reference pixel Rp: Although blocks are divided into
+different types, the length of the reference pixel is uniformly
+8 bits for all types.
+For a PE block, the total length of the encoded marker
+information is calculated as 18 + n + num + num × 4 + n ×
+numbits. In contrast, for the other two block types, this length
+is 22 + n + num + num × 4 + n × num bits. The encoded
+marking information is further categorized into several dis-
+tinct components, such as Ls, MS, Lp, BM, n, num, Lm,
+F, and Rp.
+Next is the difference symbol recording information. For
+PE and MND blocks, the differences can be positive or neg-
+ative, so it is necessary to record the sign of the interpolated
+values for pixels other than the reference pixel, requiring 15
+bits. In the MMD block, all values are smaller than the ref-
+erence pixel, so no sign needs to be recorded. If the value is
+greater than mp, it is recorded as ‘1’, otherwise, it is recorded
+as ‘0’, taking up a total of 15 bits. The difference information
+and the Huffman table are then stored into the image as aux-
+iliary information for the entire image, block by block. The
+same processing method is applied to the other regions. After
+processing all regions, the image proceeds to the sharing step.
+3.2 Level 1 embedding and polynomial-based
+sharing
+Theprocessedimageisﬁrstsegmentedintotworegionsusing
+the method in Yang et al. (2020), based on the parts deﬁned
+by the hospital, and the location coordinates of each region
+are recorded as lo1,lo2. These coordinates lo1,lo2 are used
+as part of the public key for recovering the original image.
+The corresponding image regions are labeled as I1, I2, and
+assigned ranks G1, G2, with the ranks decreasing sequen-
+tially.
+This subsection will explain the sharing algorithm process
+in detail, as shown in Algorithm 1. After the image owner
+processes the image using the encoding method proposed in
+this paper, the image encryption keys ki1, ki2, along with
+thresholds (t1, n1) and (t2, n2), are used as conditions on
+the image regions I1, I2 to generate n1, n2 shadow images
+s1, s2, ..., sn through secret image sharing. Similarly, the pri-
+vate information and medical reports owned by the patient
+and doctor, represented as SD1, SD2, are shared using the
+data encryption keys ks1, ks2 and thresholds (t1, n1), (t2, n2),
+where t1 ≥t2.
+Since the encoding method in this approach is designed
+for pixel blocks, when image sharing is applied to each
+image block, we ﬁrst convert every 8 bits in Au into dec-
+imal numbers, resulting in σ1, σ2,.... For a polynomial with
+(k, n) threshold, n polynomials of degree k −1 are required,
+resulting in a total of k × n polynomial coefﬁcients. How-
+ever, sometimes the compressed original image information
+is insufﬁcient to ﬁll k × n × 8 binary bits. Therefore, for
+123
+29
+Page 10 of 17
+Journal of King Saud University Computer and Information Sciences (2025) 37 :29
+Algorithm 1 Proposed sharing algorithm
+Input: Secret image I, secret data SD, thresholds
+t1, t2, (t1 ≥t2), n1, n2;
+Output: shares Si, i = 1, 2, ..., n;
+I is partitioned into different regions I1, I2, and the location coordi-
+nates of the regions are recorded as lo1, lo2. SD is partitioned into
+SD1, SD2, and accordingly, the ranks G1, G2 are assigned respec-
+tively, which decrease sequentially.
+for SDi, i = 1, 2 do
+Thesecretsharingalgorithmin(1)withthreshold(ti, ni)generates
+SD(i,1), SD(i,2), ..., SD(i,ni )
+end for
+for Image Ii, i = 1, 2 do
+Using the threshold (ti, ni) as the condition, share to generate
+shadow images si, i = 1, 2, ..., n
+end for
+the redundant coefﬁcients, we substitute them with medical
+image metadata,which is the Level 1 embedding. Once these
+steps are completed, we can share the block according to (1)
+and the image sharing key ki.
+3.3 Level 2 embedding
+After the image owner completes the Level 1 embedding and
+generates the image shares for uploading to the cloud server,
+the data embedder performs the Level 2 embedding. Data
+embedder is responsible for embedding the patient’s private
+information and medical reports into the corresponding loca-
+tions within the shared images. This dual embedding method
+optimizes the utilization of space within each image share.
+3.4 Data extraction and image recovery
+A minimum of tk authorizers with level Gk are required to
+receive and manage the shared data in order to extract the
+data. Then, the extracted tk data are recovered into secret
+data SDk using the Lagrange interpolation algorithm.
+To extract the embedded information and recover the orig-
+inal secret image, the recipient ﬁrst extracts the data structure
+(DS) and the Huffman coding table based on the key. Then,
+each received share is divided into 4×4 blocks, and regions
+O1, O2,..., Om are distinguished using the public key kp. The
+recipient extracts the data and recovers the image according
+to the level and type of keys they possess.
+Using the image decryption key ki and the public key
+kp, the original image can be directly reconstructed without
+extracting the secret data. Using the data hiding key ks and
+the public key kp, the secret data can be directly extracted.
+Case 1: ki and kp
+Extract the ﬁrst pixel value from each w × l shadow
+pixel block and substitute it into the Lagrange interpolation
+polynomial in (2). Simplify the polynomial and extract the
+constant coefﬁcient E M′
+1. Convert this coefﬁcient to binary
+and read the ﬁrst four bits to determine the end position Ls of
+the original image information. Next, based on the position
+information and ki, sequentially extract the image informa-
+tion. Since the length of the auxiliary information depends
+on the block type, the block type must be determined while
+extracting the information.
+After reading the ﬁrst four bits of the auxiliary infor-
+mation, continue by reading the next three bits SC, which
+indicate the block type and whether TGHQC encoding has
+been applied. If no encoding has been applied, directly look
+up the table to read the Huffman code and restore the original
+difference information. If it is a PE block, there is no need to
+obtain the original position of the reference pixel; otherwise,
+read the next four bits to obtain L p. Then, obtain the binary
+bit length of the differences BM, n, and num. Based on the
+values of BM and n, the length of the difference information
+can be inferred as (BM −n) × 15 bits.
+Next, extract num to determine the number of modiﬁed
+differences, then extract the subsequent num × 4 bits to
+determine the positions of these differences. The follow-
+ing n × num bits correspond to the information about the
+difference changes. Finally, obtain the eight-bit reference
+pixel Rp and the (BM −n) × 15 bits of difference infor-
+mation. Then, recover the original differences according to
+Section3.4, thereby restoring the original image.
+dm =d′
+m ×2+ Fm(i), m = 1, 2, . . . , num, i =1, 2, . . . , n
+Case 2: ks and kp
+Using kp, reconstruct the Ls pixel, removing its auxiliary
+information while preserving the secret information. This
+secret information, which is reconstructed by ks, is then com-
+bined with the previously extracted information to form the
+complete secret data SD.
+Case 3: ki, ks, and kp
+The secret data SD can be extracted ﬁrst based on ks, or
+the original image can be recovered ﬁrst based on ki. This
+scheme is both reversible and separable.
+3.5 Numerical example
+To better understand the algorithm, we demonstrate the pro-
+posed method using the sample block shown in Fig.2.
+First, according to (3) and (4), we can determine that the
+sample 4 × 4 block belongs to the MND category. The next
+stepistoperformhierarchicalquantizationcoding.Taking(4,
+3) sharing as an example, according to Table 1, we conclude
+that this block meets the conditions for hierarchical quantiza-
+tion coding. As shown in Fig.3, according to (8), the marked
+pixel mp for this block is 157, and the difference array d
+between the marked pixel and the other pixels is calculated
+as [5 0 0 2 7 0 0 7 2 0 2 2 2 0 5 9]. After performing the
+hierarchical quantization coding operation, the differences
+become [5 0 0 2 7 0 0 7 2 0 2 2 2 0 5 4], with a maximum
+123
+Journal of King Saud University Computer and Information Sciences (2025) 37 :29
+Page 11 of 17
+29
+Fig. 3 Texture-guided hierarchical quantization coding
+value of (7)10 = (111)2. Therefore, the corresponding num-
+ber of binary bits BM is (3)10 = (011)2. The difference sign
+information is recorded as (100110011011010)2, where val-
+ues greater than 157 are labeled as “1”, and those less than
+or equal to 157 are labeled as “0”. Since this is a marked
+block, Ms is “1”. The position of the marked pixel mp in the
+block L p is “1111”, and the position Lm in the difference
+block is also “1111”, with a corresponding value n equal to
+1. Therefore, the change feature F is only 1 bit and is set to 1.
+Additionally, by converting each decimal number in the array
+d′
+i, i = 1, 2, ..., 15 into a 3-bit binary form, constrained by
+the limit of BM, the auxiliary information set D for this block
+is generated. Ls is calculated as ⌈78
+24⌉= (4)10 = (0100)2.
+The speciﬁc values are shown in the ﬁgure and will be used
+in the subsequent sharing phase. Since this block is classiﬁed
+as an MND block, the ﬁrst two bits of MS are 01. The Huff-
+man encoding length for this block is 81 bits, so hierarchical
+quantization coding is still selected, and MS is 010.
+As shown in Fig.4, the process of generating shared data
+for the sample block is demonstrated. Assuming the sharing
+threshold is (3, 4), after generating the auxiliary informa-
+tion and difference information in Fig.3, we ﬁrst arrange the
+auxiliary information, followed by the difference informa-
+tion. These are divided into several 8-bit binary sequences
+and converted into decimal numbers less than or equal to
+255. These numbers are used as polynomial coefﬁcients,
+which are then divided into four parts for sharing based on
+ki. Before embedding, we pre-calculate the space occupied
+by all auxiliary information after sharing, which is Ls = 4.
+Therefore, this information occupies only four pixels in each
+share, with each pixel sharing 24 bits of information, mean-
+ing that four pixels require 96 bits. However, in Section3.1.3,
+we calculated the total length of Au and d′
+i to be 78 bits, leav-
+ing 18 bits of blank space. To ﬁll this blank space and further
+utilize redundant space, we plan to Level 1 embedding. The
+remaining space cannot be fully utilized in Fig.4, because
+Fig. 4 Blocks (3, 4) Sharing of MND
+123
+29
+Page 12 of 17
+Journal of King Saud University Computer and Information Sciences (2025) 37 :29
+Fig. 5 Embedding of share 1
+replacing the ﬁrst two bits of the redundant space would pre-
+vent medical image metadata from being restored. Therefore,
+only the last 16 bits can be replaced with useful information,
+which contain the medical image metadata.
+Figure5 illustrates the Level 2 embedding process for
+Data Hider 1 in Share 1. After receiving Share 1, Hider 1
+ﬁrst uses kp to determine the sharing threshold of the block,
+thereby identifying the data embedding position. The secret
+dataisthensequentiallyembeddedintotheblankpixelblocks
+according to the sharing order.
+Figure6 provides a detailed example of extracting data
+from the shares and recovering the original pixel values. As
+shown in this ﬁgure, the recipient receives any three shadow
+blocks: Share 1, Share 2, and Share 3. By using only the
+image decryption key and the public key, the ﬁrst pixel value
+can be extracted from each shadow image block, determin-
+Fig. 6 Data extraction and block recovery
+ing that the image information is located in the fourth pixel
+position. After determining that the recorded information in
+the entire block is 78 bits long, the corresponding difference
+and auxiliary information are extracted. For pixels encoded
+using hierarchical quantization coding, the receiver sequen-
+tially restores the original differences based on Section3.4,
+thereby recovering the original pixel blocks. If only the data
+extraction key and the public key are available, the recipient
+can determine the starting position of the embedded secret
+data based on the public key information, allowing for the
+complete extraction of the secret information.
+4 Experimental results and analysis
+In this section, we present the experimental results of the
+algorithms. All medical test images shown in Fig.7 are
+selected from COVID-CT (Yang et al. 2020). Additionally,
+we also selected seven classic standard images for compari-
+son experiments, and all images are of size 512 × 512.
+4.1 Security analysis
+Visual Security: Fig.8 provides an example of the image shar-
+ing and extraction process of Fig.7 (d) using the RDHSI
+algorithm, with thresholds of (2, 4) and (3, 4), w = 2, l = 4. In
+this ﬁgure, SD1 and SD2 represent private information and
+medical reports, respectively. The information is embedded
+into shares S1 through S4. The recipient, the patient, can use
+the key to recover both the lesion and personal information;
+Fig. 7 Text images (Yang et al. 2020)
+123
+Journal of King Saud University Computer and Information Sciences (2025) 37 :29
+Page 13 of 17
+29
+Fig. 8 Example of recovery and extraction in medical images shown in Fig.7 (d)
+however, without the patient’s authorization, the hospital can
+only recover the non-lesion area and the medical report.
+From this, it can be observed that all shared images appear
+as noise images and do not contain any discernible infor-
+mation from the original image, making the embedded data
+visually imperceptible. These shared images do not reveal
+any details about the original image or the secret data. For an
+attacker, the content of the original image and the embedded
+data remains undetectable.
+Therefore, it can be concluded that the proposed scheme is
+lossless.Additionally,thesizeofthegeneratedsharedimages
+is equal to the size of the original image. From this, we can
+conclude that the proposed scheme is both secure and reli-
+able.
+Image Histogram: Fig.9 shows the histogram of the orig-
+inal image in Fig.8, along with the histograms of the four
+shares and recover image. It is clear from the ﬁgure that there
+is a signiﬁcant difference between the histogram of the orig-
+inal image (a) and the histograms of the shared images (b),
+(c), (d) and (e). The histogram of the original image exhibits
+a more concentrated distribution, whereas the histograms
+of the shared images display a more uniform distribution,
+resembling noise. This indicates that during the sharing pro-
+cess, the original information of the image is effectively
+concealed, and the generated shared images do not con-
+tain any discernible features of the original image, thereby
+ensuring the security and conﬁdentiality of the image sharing
+process.
+PSNR and SSIM: To verify the visual security and encryp-
+tion effectiveness of the proposed method during the infor-
+mation hiding process, we calculated the PSNR and SSIM
+values between the encrypted images (shared images) and
+the original images. PSNR evaluates the pixel-level similar-
+ity, while SSIM measures the structural similarity. Ideally,
+encrypted images should exhibit low PSNR and SSIM values
+close to 0 compared to the original images, ensuring that the
+123
+29
+Page 14 of 17
+Journal of King Saud University Computer and Information Sciences (2025) 37 :29
+Fig. 9 Histogram of original image, S1-S4 and recover image in Fig.8
+encrypted images are visually imperceptible and incapable
+of leaking original information.
+In the experiment, medical images in Fig.7 were selected
+as test images, and they were shared using a (3, 4) threshold
+scheme. The PSNR and SSIM of the reconstructed images
+and the four shares relative to the original images were tested.
+The results are shown in Table 2.
+From the table, it can be observed that the PSNR values
+of all encrypted images are low (around 9 10 dB), indi-
+cating minimal pixel-level similarity between the encrypted
+images and the original images. Additionally, the SSIM val-
+ues of the encrypted images are close to 0, showing that
+the encrypted images lack visual and structural similarity to
+the original images. This demonstrates that the encryption
+process effectively conceals the information of the original
+images, ensuring the visual security of the encrypted images.
+The experimental results demonstrate that the proposed
+method can generate encrypted images with pseudo-random
+distributions, making them visually resemble noise. As a
+result, it is impossible to infer any information about the
+original images from the encrypted images. This further val-
+idates the security and reliability of the proposed method
+during the information hiding process.
+4.2 Data expansion
+According to the discussion in the literature (Wu et al. 2018),
+data expansion means that the shared encrypted image is
+larger than the original image. The data expansion rate of the
+entire scheme can be reﬂected by the ratio of the number of
+pixels in the shared encrypted image to the number of pixels
+in the original image.
+Expansion rate = number of shared image pixels
+number of original image pixels
+(12)
+Therefore, the expansion rate is used in the experiment
+to reﬂect the data expansion of the scheme, and the data
+expansion rate is expected to be as small as possible. The data
+expansion of this paper’s scheme is compared with several
+different schemes proposed by Wu et al. (2018), Qin et al.
+(2021), Chen et al. (2019), Chen et al. (2020), and Hua et al.
+(2022), as shown in Table 3. In the schemes (Wu et al. 2018;
+Qin et al. 2021; Chen et al. 2019), and (Chen et al. 2020),
+the shared shares generated are the same size as the original
+image, so the expansion rate is 1. The size of the shared share
+generated by the scheme in Hua et al. (2022) is 1/(t - 1) of
+the original image, where t is the recovery threshold, so its
+expansion rate is 1/(t - 1), showing better data expansion
+performance. In the scheme of this paper, the shared shares
+generated by the proposed sharing and embedding algorithm
+are the same size as the original image, the shared shares in
+multi-party recovery are the same size as the divided region,
+and the maximum size of the shared share is the size of the
+original image. Therefore, the maximum expansion rate of
+the proposed scheme in this paper is 1, demonstrating good
+data expansion performance.
+Table 2 PSNR and SSIM of original, shares, and recovered images of Fig.7
+Images
+S1
+S2
+S3
+S4
+Recovered Image
+PSNR
+SSIM
+PSNR
+SSIM
+PSNR
+SSIM
+PSNR
+SSIM
+Fig.7(a)
+9.87
+0.011
+10.12
+0.014
+9.95
+0.013
+10.03
+0.010
+PSNR=∞, SSIM=1.000
+Fig.7(b)
+9.65
+0.010
+9.89
+0.012
+10.02
+0.011
+9.84
+0.009
+PSNR=∞, SSIM=1.000
+Fig.7(c)
+9.78
+0.012
+10.05
+0.013
+9.92
+0.010
+9.99
+0.008
+PSNR=∞, SSIM=1.000
+Fig.7(d)
+9.56
+0.009
+9.81
+0.011
+9.74
+0.010
+10.08
+0.009
+PSNR=∞, SSIM=1.000
+123
+Journal of King Saud University Computer and Information Sciences (2025) 37 :29
+Page 15 of 17
+29
+Table 3 Data expansion of different programmes
+Shames
+Expansion rate
+Wu et al. (2018)
+1
+Qin et al. (2021)
+1
+Chen et al. (2019)
+1
+Chen et al. (2020)
+1
+Hua et al. (2022)
+1/(t −1)
+Proposed method
+≤1
+4.3 Payload capacity
+In the experiments, we tested the embedding rate (ER) of
+the encoding scheme proposed in this paper under differ-
+ent sharing thresholds. All schemes measured the effective
+ER, which is the ER of effective data after removing the
+embedded auxiliary information, as shown in (12). We ran-
+domly selected several medical images, as shown in Fig.7,
+and tested the ER of these images under several different
+sharing thresholds, with the results shown in Table 4. We set
+different w and l with different t. As the value of t in the shar-
+ing threshold increases, more auxiliary information data can
+be accommodated in the polynomial, providing more space
+for embedding effective secret data in the image. Therefore,
+for the same image, the higher the t value in the sharing
+threshold, the higher the ER.
+To further enhance the persuasiveness of the experiments,
+we selected several commonly used classic images and
+compared them with various advanced RDHEI and RDHSI
+methods (Yin et al. 2022; Yao et al. 2024; Yu et al. 2022; Yin
+et al. 2020; Yu and Zhang 2023), we set w = 4, l = 4; As
+shown in Fig.10, in the vast majority of classic images, our
+embedding rate is signiﬁcantly higher than almost all other
+schemes, with the only exception being the airplane image,
+where it is slightly lower than (Yu and Zhang 2023). This
+demonstrates that the proposed method achieves a higher
+embedding capacity while maintaining image quality.
+We also compared the TGHQC proposed in this paper
+with Yin et al. (2022); Yao et al. (2024); Yu et al. (2022);
+Yin et al. (2020); Yu and Zhang (2023) on two classic
+Table 4 Embedding rate of different test images of Fig.7 in different
+shared thresholds
+image
+(2, 4) Shared
+(3, 4) Shared
+(4, 4) Shared
+w=2, l=4
+w=2, l=4
+w=2, l=4
+ER(bpp)
+ER(bpp)
+ER(bpp)
+(a)
+3.65
+4.59
+5.56
+(b)
+3.91
+4.85
+5.87
+(c)
+4.56
+5.40
+6.37
+(d)
+3.72
+4.64
+5.59
+Average
+3.96
+4.87
+5.85
+Fig. 10 Comparison of ER with several advanced encoding methods
+in classic images
+datasets, BOSScase and BOWS-2. The comparison results
+are shown in Fig.11. The proposed TGHQC achieved signif-
+icantly higher average embedding efﬁciency on BOSSBase
+and BOWS-2 than other schemes. It can be seen that the pro-
+posed TGHQC achieves a higher embedding rate compared
+to the other methods, demonstrating its superiority. Addi-
+tionally, we also evaluated the embedding rate of TGHQC in
+the medical image dataset (Yang et al. 2020). Experimental
+results show that the proposed encoding method achieves an
+average embedding rate of 4.5433 bpp in the medical image
+dataset, indicating a relatively high embedding capacity.
+4.4 Performance comparison
+This subsection summarizes the characteristics of several dif-
+ferent related schemes and the results are shown in Table 5.
+The schemes in the literature (Wu et al. 2018; Qin et al. 2021;
+Chen et al. 2020; Yu and Zhang 2023) and (Hua et al. 2022)
+all address the case where the storage party needs to classify
+and label the image after the secret image is shared, so the
+data embedding is done in the cloud service provider or data
+hiding party. The algorithm proposed in this paper, on the
+other hand, addresses the situation where the system needs
+Fig. 11 Comparison of ER with several advanced encoding methods
+in BOSScase and BOWS-2
+123
+29
+Page 16 of 17
+Journal of King Saud University Computer and Information Sciences (2025) 37 :29
+Table 5 Comparison of the performance of different shames
+Shame
+Data hider
+Secret data shared
+Complexity of the algorithm
+Level of access
+Separable
+Wu et al. (2018)
+Single data hider
+NO
+(t+2)(t−1)M N
+2
+NO
+NO
+Qin et al. (2021)
+Single data hider
+NO
+(t+2)(t−1)M N
+2
+NO
+NO
+Chen et al. (2020)
+Multiple data hider
+NO
+(t+2)(t−1)M N
+2
+NO
+YES
+Hua et al. (2022)
+Multiple data hider
+NO
+(t+2)M N
+2
+NO
+NO
+Yu and Zhang (2023)
+Multiple data hider
+NO
+(t+2)(t−1)M N
+2
+NO
+NO
+Proposed method
+Multiple data hider
+YES
+< (t+2)(t−1)M N
+2
+YES
+YES
+to encrypt both the secret image and the additional data, so
+it chooses to carry out the sharing and data embedding oper-
+ations in the content owner, which saves the transmission
+bandwidth and avoids the additional database access. The
+properties that each scheme relies on when embedding data
+are listed in the table.
+The proposed scheme in this paper utilizes texture infor-
+mation of pixel blocks to generate differences, which max-
+imizes space savings for data embedding. Additionally, the
+algorithms in Wu et al. (2018); Qin et al. (2021); Chen et al.
+(2020) and Yu and Zhang (2023) require sequential process-
+ing of each pixel value in an image of size M × N. Each
+sharingoperationrequires(t−1)M N additionoperationsand
+(t(t−1)M N)
+2
+multiplication operations under a (t, n) threshold,
+so their algorithmic complexity is deﬁned as ((t+2)(t−1)M N)
+2
+.
+In contrast, the scheme in Hua et al. (2022) computes in
+groups of (t −1) pixels during sharing, leading to an algo-
+rithmic complexity of ((t+2)M N)
+2
+. In the proposed scheme
+of this paper, each 4 × 4 marked pixel block only needs
+to compute two polynomials, each 2 × 2 sub-marked pixel
+block only needs to compute one polynomial, and each 2
+× 2 non-sub-marked pixel block requires four polynomi-
+als to be computed. Thus, the computational complexity
+of this scheme depends on the texture complexity of the
+secret image, and not all regions use the same polynomial
+for sharing, resulting in lower complexity compared to other
+schemes.
+Furthermore, this scheme effectively combines texture
+information to optimize the data embedding process, which
+not only saves space but also enhances embedding efﬁciency
+and data conﬁdentiality. This combination allows for better
+implementation of data hiding and information security in
+practical applications, especially in scenarios involving high-
+resolution images or requiring the storage of large amounts
+of additional data.
+Therefore, the proposed scheme based on generating dif-
+ferences using texture information not only has signiﬁcant
+advantages in data embedding space but also demonstrates
+superiority in computational complexity, making it suitable
+for use in visual information systems that require high secu-
+rity and efﬁcient computation.
+5 Conclusion
+This paper proposes a multi-party reversible data hiding
+algorithm based on texture-guided hierarchical quantization
+coding for sharing medical images. Firstly, a framework for
+secure multi-party storage and access of medical system
+information is proposed; the main data authorizers are the
+patients and hospitals. By implementing role-based access to
+information, the secure storage and access of medical images
+within the system are achieved. We also propose a new cod-
+ing method called TGHQC, which uses the texture features
+of pixel blocks to adaptively generate difference information
+and subsequently perform hierarchical encoding. Finally,
+A dual embedding mechanism is designed,This embedding
+method signiﬁcantly increases embedding capacity while
+ensuring information security.
+Data Availability All data included in this study are available upon
+request by contact with the corresponding author.
+Declarations
+Conﬂict of interest The authors have no relevant ﬁnancial or non-
+ﬁnancial interests to disclose. The authors have no Conﬂict of interest to
+declare that are relevant to the content of this article. All authors certify
+that they have no afﬁliations with or involvement in any organization or
+entity with any ﬁnancial interest or non-ﬁnancial interest in the subject
+matter or materials discussed in this manuscript. The authors have no
+ﬁnancial or proprietary interests in any material discussed in this article.
+Open Access This article is licensed under a Creative Commons
+Attribution-NonCommercial-NoDerivatives 4.0 International License,
+which permits any non-commercial use, sharing, distribution and repro-
+duction in any medium or format, as long as you give appropriate credit
+to the original author(s) and the source, provide a link to the Creative
+Commons licence, and indicate if you modiﬁed the licensed mate-
+rial. You do not have permission under this licence to share adapted
+material derived from this article or parts of it. The images or other
+third party material in this article are included in the article’s Creative
+Commons licence, unless indicated otherwise in a credit line to the
+material. If material is not included in the article’s Creative Commons
+licence and your intended use is not permitted by statutory regula-
+tion or exceeds the permitted use, you will need to obtain permission
+directly from the copyright holder. To view a copy of this licence, visit
+http://creativecommons.org/licenses/by-nc-nd/4.0/.
+123
+Journal of King Saud University Computer and Information Sciences (2025) 37 :29
+Page 17 of 17
+29
+References
+Canny J (1986) A computational approach to edge detection. IEEE
+Trans Pattern Anal Mach Intell 8:679–698. https://doi.org/10.
+1109/TPAMI.1986.4767851
+Chen Y, Hung T, Hsieh S et al (2019) A new reversible data
+hiding in encrypted image based on multi-secret sharing and
+lightweight cryptographic algorithms. IEEE Trans Inf Forensics
+Secur 14:3332–3343
+Chen B, Lu W, Huang J et al (2020) Secret sharing based reversible data
+hiding in encrypted images with multiple data-hiders. IEEE Trans
+Dependable Secure Comput 19:978–991. https://doi.org/10.1109/
+TDSC.2020.2982197
+Chen B, Lu W, Huang J et al (2022) Secret sharing based reversible
+data hiding in encrypted images with multiple data-hiders. IEEE
+Trans Dependable Secure Comput 19:978–991
+Chen B, Yang R, Fang W, Zhan X, Cai J (2024) On the design of multi-
+party reversible data hiding over ciphered overexposed images.
+Symmetry 16:45. https://doi.org/10.3390/sym16010045
+Hua Z, Wang Y, Yi S et al (2022) Reversible data hiding in encrypted
+images using cipher-feedback secret sharing. IEEE Trans Circ Syst
+Vid Technol 32:4968–4982
+Huang F, Huang J, Shi YQ (2016) New framework for reversible
+data hiding in encrypted domain. IEEE Trans Inf Forensics Secur
+11:2777–2789
+Huang J, Cui Q, Zhou Z, Yu K, Yang CN, Choo KKR (2024) Encrypted
+domain secret medical-image sharing with secure outsourcing
+computation in iot environment. IEEE Internet Things J 11:2382–
+2393
+Li X, Li B, Yang B, Zeng T (2013) General framework to histogram-
+shifting-based reversible data hiding. IEEE Trans Image Process
+22:2181–2191
+Luo L, Chen Z, Chen M, Zeng X, Xiong Z (2010) Reversible
+image watermarking using interpolation technique. IEEE Trans
+Inf Forensics Secur 5:187–193
+Ma K, Zhang W, Zhao X, Yu N, Li F (2013) Reversible data hiding
+in encrypted images by reserving room before encryption. IEEE
+Trans Inf Forensics Secur 8:553–562
+Ni Z, Shi Y, Ansari N, Su W (2006) Reversible data hiding. IEEE Trans
+Circ Syst Vid Technol 16:354–362
+Qin C, Jiang C, Mo Q et al (2021) Reversible data hiding in encrypted
+image via secret sharing based on GF(q) and GF(28). J Real-
+Time Image Process 18:1831–1841
+Shamir A (1979) How to share a secret. Commun ACM 22:612–613
+Thien C, Lin J (2002) Secret image sharing. Comput Graph 26:765–770
+Thodi D, Rodríguez J (2007) Expansion embedding techniques for
+reversible watermarking. IEEE Trans Image Process 16:721–730
+Tian J (2003) Reversible data embedding using a difference expansion.
+IEEE Trans Circ Syst Vid Technol 13:890–896
+WengK,QinJ,SongT,Shi H(2023)Reversible data hidinginencrypted
+imagebasedondual-domainjointcodingandsecretsharing.JAppl
+Sci 41:197–217
+Wu X, Weng J, Yan W (2018) Adopting secret sharing for reversible
+data hiding in encrypted images. Signal Process 143:269–281
+Xiong L, Han X, Yang C, Xia Z (2023) RDH-DES: Reversible data
+hiding over distributed encrypted-image servers based on secret
+sharing. ACM Trans Multimed Comput Commun Appl 19:5
+Yang C, Chen T, Yu K et al (2007) Improvements of image sharing with
+steganography and authentication. J Syst Softw 80:1070–1076
+Yang X, He X, Zhao J, Zhang Y, Zhang S, Xie P (2020) Covidct-dataset:
+A ct scan dataset about covid-19. arXiv https://doi.org/10.48550/
+arXiv.2003.13865
+Yao Y, Wang K, Chang Q, Weng S (2024) Reversible data hiding
+in encrypted images using global compression of zero-valued
+high bitplanes and block rearrangement. IEEE Trans Multimed
+26:3701–3714. https://doi.org/10.1109/TMM.2023.3314975
+Yin Z, Xiang Y, Zhang X (2020) Reversible data hiding in encrypted
+images based on multi-msb prediction and huffman coding. IEEE
+Trans Multimed 22:874–884. https://doi.org/10.1109/TMM.2019.
+2936314
+Yin Z, Peng Y, Xiang Y (2022) Reversible data hiding in encrypted
+images based on pixel prediction and bit-plane compression. IEEE
+Trans Dependable Secure Comput 19:992–1002
+Yin Z, Peng Y, Xiang Y (2022) Reversible data hiding in encrypted
+images based on pixel prediction and bit-plane compression. IEEE
+Trans Dependable Secure Comput 19:992–1002. https://doi.org/
+10.1109/TDSC.2020.3021875
+Yu CQ, Zhang XQ et al (2023) Reversible data hiding in encrypted
+images with secret sharing and hybrid coding. IEEE Trans Circ
+Syst Vid Technol 33:6443–6458. https://doi.org/10.1109/TCSVT.
+2023.3271268
+Yu C, Zhang X, Li G, Zhan S, Tang Z (2022) Reversible data hiding
+with adaptive difference recovery for encrypted images. Inf Sci
+584:89–110. https://doi.org/10.1016/j.ins.2021.12.020
+Yu C, Zhang X, Zhang X, Li G, Tang Z (2022) Reversible data
+hiding with hierarchical embedding for encrypted images. IEEE
+Trans Circ Syst Vid Technol 32:451–466. https://doi.org/10.1109/
+TCSVT.2021.3062947
+Zhang X (2011) Reversible data hiding in encrypted image. IEEE Signal
+Process Lett 18:255–258
+Zhang X (2012) Separable reversible data hiding in encrypted image.
+IEEE Trans Inf Forensics Secur 7:826–832
+Publisher’s Note Springer Nature remains neutral with regard to juris-
+dictional claims in published maps and institutional afﬁliations.
+123

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CipherVision — 3-Tier Adaptive Chaotic Image Encryption System using GLCM Texture Analysis and Random Forest Classification.">
+    <title>CipherVision | Adaptive Image Encryption</title>
+
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<div class="app-container">
+
+    <!-- ═══ Header ═══ -->
+    <header class="app-header">
+        <div class="app-logo">
+            <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="shieldGrad" x1="0" y1="0" x2="40" y2="40">
+                        <stop offset="0%" stop-color="#a855f7"/>
+                        <stop offset="50%" stop-color="#3b82f6"/>
+                        <stop offset="100%" stop-color="#06b6d4"/>
+                    </linearGradient>
+                </defs>
+                <path d="M20 2L4 10v10c0 11 7 18 16 20 9-2 16-9 16-20V10L20 2z" stroke="url(#shieldGrad)" stroke-width="2.5" fill="none"/>
+                <path d="M14 20l4 4 8-8" stroke="url(#shieldGrad)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+            <h1 class="app-title">CipherVision</h1>
+        </div>
+        <p class="app-subtitle">
+            3-Tier Adaptive Chaotic Encryption · <strong>GLCM Feature Analysis</strong> · <strong>ML Classification</strong> · <strong>100% Lossless</strong>
+        </p>
+        <div class="header-divider"></div>
+    </header>
+
+    <!-- ═══ Tab Navigation ═══ -->
+    <nav class="tab-nav" id="tabNav">
+        <button class="tab-btn active" data-tab="encrypt">
+            <span class="tab-icon">🔒</span> Encrypt
+        </button>
+        <button class="tab-btn" data-tab="decrypt">
+            <span class="tab-icon">🔓</span> Decrypt
+        </button>
+        <button class="tab-btn" data-tab="analysis">
+            <span class="tab-icon">📊</span> Security Analysis
+        </button>
+        <button class="tab-btn" data-tab="sensitivity">
+            <span class="tab-icon">🔑</span> Key Sensitivity
+        </button>
+        <button class="tab-btn" data-tab="benchmark">
+            <span class="tab-icon">📋</span> Benchmark
+        </button>
+    </nav>
+
+    <!-- ═══════════════════ TAB 1: ENCRYPT ═══════════════════ -->
+    <section class="tab-panel active" id="panel-encrypt">
+        <div class="card animate-in">
+            <div class="card-title"><span class="icon">🛡️</span> Upload & Secure</div>
+
+            <div class="upload-zone" id="uploadZone">
+                <input type="file" id="imageInput" accept="image/jpeg,image/png,image/bmp,image/webp">
+                <div class="upload-icon">📁</div>
+                <div class="upload-text">Drop an image here or click to browse</div>
+                <div class="upload-hint">Supports JPG, PNG, BMP, WebP</div>
+            </div>
+
+            <!-- Preview of uploaded image -->
+            <div id="previewSection" class="hidden" style="margin-top:1.25rem;">
+                <div class="image-grid">
+                    <div class="image-box">
+                        <div class="image-box-header">📷 Original Image</div>
+                        <img id="previewImg" alt="Original image preview">
+                    </div>
+                    <div class="image-box" id="encryptedBox" style="display:none;">
+                        <div class="image-box-header">🔒 Encrypted Output</div>
+                        <img id="encryptedImg" alt="Encrypted image">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Password input -->
+            <div id="passwordSection" class="hidden" style="margin-top:1.25rem;">
+                <div class="input-group">
+                    <label class="input-label" for="encPassword">Secret Password</label>
+                    <input type="password" class="text-input" id="encPassword" placeholder="Enter a strong password...">
+                </div>
+                <button class="btn btn-primary" id="encryptBtn" disabled>
+                    <span>⚡</span> Start 3-Tier Adaptive Encryption
+                </button>
+            </div>
+
+            <!-- Progress -->
+            <div class="progress-stepper" id="encProgress">
+                <div class="step-bar"><div class="step-bar-fill" id="stepBarFill"></div></div>
+                <div class="step-label"><span class="spinner"></span> <span id="stepText">Initializing...</span></div>
+            </div>
+
+            <!-- Result callouts -->
+            <div id="encResult" class="hidden"></div>
+
+            <!-- Download and texture info -->
+            <div id="encMeta" class="hidden" style="margin-top:1rem;">
+                <div style="display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap;">
+                    <a class="download-link" id="downloadLink" download="ciphervision_encrypted.png">⬇ Download Encrypted Image</a>
+                    <span id="encTimeBadge" style="font-size:0.85rem; color:var(--text-muted);"></span>
+                </div>
+                <div class="block-breakdown" id="blockBreakdown" style="margin-top:1rem;"></div>
+            </div>
+        </div>
+
+        <!-- Texture Map -->
+        <div class="card animate-in animate-in-delay-1" id="textureMapCard" style="display:none;">
+            <div class="card-title"><span class="icon">🎨</span> Texture Classification Map</div>
+            <div class="image-grid">
+                <div class="image-box">
+                    <div class="image-box-header">🧩 Block Classification</div>
+                    <img id="textureMapImg" alt="Texture classification map">
+                </div>
+                <div style="padding:0.5rem;">
+                    <p style="font-size:0.88rem; color:var(--text-secondary); margin-bottom:1.2rem;">
+                        Each 16×16 block is classified by the Random Forest into one of three texture tiers, routed to a matched chaotic encryption system.
+                    </p>
+                    <div style="display:flex; flex-direction:column; gap:0.8rem;">
+                        <div class="block-item"><span class="block-dot smooth"></span> Smooth → 1D Logistic Map</div>
+                        <div class="block-item"><span class="block-dot medium"></span> Medium → 3D Lorenz Attractor (RK4)</div>
+                        <div class="block-item"><span class="block-dot rough"></span> Rough → 4D Hyperchaotic Chen</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════ TAB 2: DECRYPT ═══════════════════ -->
+    <section class="tab-panel" id="panel-decrypt">
+        <div class="card animate-in">
+            <div class="card-title"><span class="icon">🔓</span> Lossless Decryption</div>
+
+            <div id="decryptReady" class="hidden">
+                <div class="image-grid">
+                    <div class="image-box">
+                        <div class="image-box-header">🔒 Encrypted Image</div>
+                        <img id="decEncImg" alt="Encrypted image for decryption">
+                    </div>
+                    <div class="image-box" id="decResultBox" style="display:none;">
+                        <div class="image-box-header">✅ Decrypted Output</div>
+                        <img id="decResultImg" alt="Decrypted image">
+                    </div>
+                </div>
+
+                <div class="input-group" style="margin-top:1.25rem;">
+                    <label class="input-label" for="decPassword">Enter Secret Password</label>
+                    <input type="password" class="text-input" id="decPassword" placeholder="Enter the password used for encryption...">
+                </div>
+                <button class="btn btn-green" id="decryptBtn">
+                    <span>🔓</span> Decrypt Image
+                </button>
+                <div id="decResult" class="hidden" style="margin-top:1rem;"></div>
+            </div>
+
+            <div id="decryptEmpty">
+                <div class="empty-state">
+                    <div class="empty-icon">🔐</div>
+                    <p>Encrypt an image first in the <strong>Encrypt</strong> tab.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════ TAB 3: SECURITY ANALYSIS ═══════════════════ -->
+    <section class="tab-panel" id="panel-analysis">
+        <div id="analysisContent" class="hidden">
+
+            <!-- Avalanche Metrics -->
+            <div class="card animate-in">
+                <div class="card-title"><span class="icon">💥</span> Avalanche Effect (Plaintext Sensitivity)</div>
+                <div class="metrics-grid" id="avalancheGrid"></div>
+            </div>
+
+            <!-- Statistical Profiles -->
+            <div class="card animate-in animate-in-delay-1">
+                <div class="card-title"><span class="icon">📐</span> Statistical Security Profiles</div>
+                <div class="metrics-grid" id="statsGrid"></div>
+            </div>
+
+            <!-- Correlation -->
+            <div class="card animate-in animate-in-delay-2">
+                <div class="card-title"><span class="icon">🔗</span> Adjacent Pixel Correlation Coefficients</div>
+                <div class="corr-grid" id="corrGrid"></div>
+            </div>
+
+            <hr class="divider">
+
+            <!-- Histograms -->
+            <div class="card animate-in animate-in-delay-3">
+                <div class="card-title"><span class="icon">📊</span> Histogram Analysis</div>
+                <div class="chart-grid" id="histogramGrid"></div>
+            </div>
+
+            <hr class="divider">
+
+            <!-- Scatter Plots -->
+            <div class="card animate-in animate-in-delay-4">
+                <div class="card-title"><span class="icon">🔬</span> Correlation Scatter Plots</div>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">
+                    Original: dense diagonal (high correlation) · Encrypted: uniform cloud (zero correlation)
+                </p>
+                <div class="section-title">Original Image</div>
+                <div class="scatter-grid" id="scatterOrigGrid"></div>
+                <div class="section-title" style="margin-top:1.5rem;">Encrypted Image</div>
+                <div class="scatter-grid" id="scatterEncGrid"></div>
+            </div>
+        </div>
+
+        <div id="analysisEmpty">
+            <div class="empty-state">
+                <div class="empty-icon">📊</div>
+                <p>Encrypt an image first to view the full security analysis.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════ TAB 4: KEY SENSITIVITY ═══════════════════ -->
+    <section class="tab-panel" id="panel-sensitivity">
+        <div class="card animate-in">
+            <div class="card-title"><span class="icon">🔑</span> Key Sensitivity Analysis</div>
+            <p style="font-size:0.9rem; color:var(--text-secondary); margin-bottom:1.25rem;">
+                <strong>Proof:</strong> Changing even 1 character in the password produces completely different ciphertext.
+            </p>
+
+            <div id="sensitivityReady" class="hidden">
+                <div class="input-group">
+                    <label class="input-label" for="sensPassword">Base Password</label>
+                    <input type="text" class="text-input" id="sensPassword" value="MySecretKey123">
+                </div>
+                <button class="btn btn-primary" id="sensBtn">
+                    <span>🧪</span> Run Key Sensitivity Test
+                </button>
+                <div id="sensResult" class="hidden" style="margin-top:1.5rem;"></div>
+            </div>
+
+            <div id="sensitivityEmpty">
+                <div class="empty-state">
+                    <div class="empty-icon">🔑</div>
+                    <p>Encrypt an image first.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ═══════════════════ TAB 5: BENCHMARK ═══════════════════ -->
+    <section class="tab-panel" id="panel-benchmark">
+        <div class="card animate-in">
+            <div class="card-title"><span class="icon">📋</span> CipherVision vs Published Literature</div>
+
+            <div id="benchmarkTable" class="hidden">
+                <div style="overflow-x:auto;">
+                    <table class="comparison-table" id="compTable"></table>
+                </div>
+
+                <div class="callout callout-info" style="margin-top:1.5rem;">
+                    <span class="callout-icon">💡</span>
+                    <div>
+                        <strong>Key Insight:</strong> CipherVision uses a <strong>3-tier ML-driven adaptive approach</strong> —
+                        matching Tang 2025's hierarchy but replacing manual entropy thresholds with
+                        <strong>8-feature GLCM + Random Forest classification</strong>, making it robust across diverse image types including medical imaging.
+                    </div>
+                </div>
+            </div>
+
+            <div id="benchmarkEmpty">
+                <div class="empty-state">
+                    <div class="empty-icon">📋</div>
+                    <p>Encrypt an image to see how your results compare.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<script src="/static/js/app.js"></script>
+</body>
+</html>

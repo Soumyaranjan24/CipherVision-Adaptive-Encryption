@@ -1,0 +1,536 @@
+================================================================================
+         LITERATURE REVIEW: IMAGE ENCRYPTION BASED ON TEXTURAL FEATURE ANALYSIS
+                          (Senior Cryptography Research Analysis)
+================================================================================
+
+Paper 3 is excluded — file was empty/corrupt.
+
+================================================================================
+PAPER 1: Image Encryption Using Chaotic Maps — A Comparative Cryptanalysis
+Authors: A. Dinu & M. Frunzete (2025)
+Journal: Mathematics, 13, 2588
+================================================================================
+
+1. RESEARCH OBJECTIVE
+   To systematically evaluate and compare classical chaotic maps (Henon, Tent,
+   Logistic) against AES for image encryption, using statistically independent
+   sampling and standardised datasets. The study aims to identify whether
+   quantitative metrics always reflect visual encryption quality.
+
+2. TEXTURE FEATURES USED
+   None. No texture-based or content-adaptive processing is applied. The study
+   treats images as flat bitstreams for XOR-based encryption.
+
+3. ENCRYPTION ALGORITHM
+   Binary key generation from chaotic trajectories → XOR masking of image
+   bitstream. Decryption repeats the same XOR with the identical key.
+
+4. CHAOTIC MAPS / CRYPTOGRAPHIC METHODS
+   • Henon Map (2D)
+   • Tent Map (1D)
+   • Logistic Map (1D)
+   • AES (baseline comparison)
+
+5. DATASET / IMAGES USED
+   100 RGB images of size 512×512 from publicly available Kaggle datasets,
+   spanning five object classes (albatross, airliner, admiral butterfly,
+   African elephant, American lobster).
+
+6. SECURITY METRICS
+   ┌──────────┬────────┬────────┬──────────┬──────────┬────────┐
+   │ System   │  MSE   │  PSNR  │ NPCR (%) │ UACI (%) │ Time(s)│
+   ├──────────┼────────┼────────┼──────────┼──────────┼────────┤
+   │ AES      │ 105.51 │ 27.90  │  49.98   │  26.24   │  0.01  │
+   │ Henon    │ 133.39 │ 26.88  │  45.18   │  23.72   │  0.72  │
+   │ Logistic │ 119.02 │ 27.37  │  54.12   │  28.41   │  0.43  │
+   │ Tent     │ 119.29 │ 27.36  │  54.53   │  28.63   │  0.42  │
+   └──────────┴────────┴────────┴──────────┴──────────┴────────┘
+   Note: NPCR and UACI values are far below standard thresholds (99.6%, 33.46%)
+   because the paper measures bit-level change rate, not the standard pixel-
+   level differential metric used in other encryption literature.
+
+7. EXPERIMENTAL RESULTS
+   • Tent and Logistic maps achieve strong visual encryption; Henon produces
+     partially interpretable ciphertext despite better MSE/PSNR numbers.
+   • AES shows the most uniform histograms and fastest execution.
+   • A clear disconnect exists between numerical metrics and visual quality.
+   • No entropy or correlation analysis was performed.
+
+8. STRENGTHS
+   • Rigorous statistical independence framework for chaotic sampling.
+   • Honest acknowledgement that standard metrics (PSNR, MSE, NPCR) can be
+     misleading — motivates multi-dimensional evaluation.
+   • Reproducible benchmark using standardised Kaggle datasets.
+
+9. LIMITATIONS
+   • No entropy, correlation, or key-space analysis — incomplete security profile.
+   • Simple XOR-only encryption; no permutation or diffusion stages.
+   • Henon map produces visually poor encryption despite favourable metrics.
+   • No content-adaptive or region-based encryption strategy.
+
+10. RESEARCH GAP
+    The study proves that standard quantitative metrics do NOT guarantee
+    encryption quality, but offers no solution. No spatial or textural
+    adaptation is proposed — the entire image is encrypted uniformly. This
+    motivates the need for content-aware encryption that adapts to local
+    image complexity rather than relying on a single global chaotic key.
+
+
+================================================================================
+PAPER 2: Multi-Image Encryption Scheme Based on Chaotic Pseudo-Random
+         Signal Generator and DWT Compression
+Authors: Y. Xu, S. Gao, Y. Cao & J. Mou (2026)
+Journal: ACM Trans. Multimedia Comput. Commun. Appl., Vol. 22, No. 3, Art. 82
+================================================================================
+
+1. RESEARCH OBJECTIVE
+   To design an efficient multi-image encryption scheme that compresses colour
+   images via DWT before encryption, reducing resource consumption during
+   network transmission while maintaining high security.
+
+2. TEXTURE FEATURES USED
+   DWT (Discrete Wavelet Transform) is used for frequency-band decomposition
+   and compression (LL subband retained at 1/4 size). No spatial texture
+   classification or block-level adaptation is performed.
+
+3. ENCRYPTION ALGORITHM
+   • DWT compresses each colour image to 1/4 size (LL subband).
+   • Compressed images are merged into a plaintext cube.
+   • Confusion stage: 3D position scrambling using chaotic index sequences.
+   • Diffusion stage: pixel-wise XOR with chaotic pseudo-random sequences.
+
+4. CHAOTIC MAPS / CRYPTOGRAPHIC METHODS
+   Three-dimensional discrete chaotic map used as a pseudo-random number
+   signal generator for both confusion and diffusion.
+
+5. DATASET / IMAGES USED
+   SIPI Image Database (USC): 256×256×3 images (4.1.01–4.1.07) and
+   512×512×3 images (4.2.01–4.2.07). Total of 12 test images.
+
+6. SECURITY METRICS
+   ┌────────────────┬──────────┬──────────┬───────────┐
+   │ Metric         │  Mean    │  Best    │  Worst    │
+   ├────────────────┼──────────┼──────────┼───────────┤
+   │ NPCR (%)       │  99.6533 │  99.6931 │  99.5906  │
+   │ UACI (%)       │  33.4887 │  33.6914 │  33.3482  │
+   │ Entropy (bits) │  7.9994  │  7.9998  │  7.9882   │
+   │ Key Space      │  2^774   │    —     │    —      │
+   │ Enc. Time (s)  │  3.2505  │    —     │    —      │
+   └────────────────┴──────────┴──────────┴───────────┘
+   Correlation coefficients: near 0 in all directions for cipher images.
+
+7. EXPERIMENTAL RESULTS
+   • NPCR and UACI exceed standard thresholds (99.6094%, 33.4635%).
+   • Entropy close to theoretical maximum of 8.
+   • Robust against noise attacks (SPN 0.002, GN 10^-6) and shearing (15% cut).
+   • PSNR of recovered images: 28–34 dB (lossy reconstruction).
+
+8. STRENGTHS
+   • Massive key space (2^774) ensures brute-force resistance.
+   • Multi-image processing in a single cube improves throughput.
+   • DWT compression reduces bandwidth requirements by 75%.
+   • Excellent statistical metrics across all standard tests.
+
+9. LIMITATIONS
+   • DWT compression is lossy — recovered images are NOT identical to originals
+     (PSNR = 28–34 dB, not infinity). Unacceptable for medical/forensic imaging.
+   • Extra space padded with zeros in the cube is wasteful.
+   • No content-adaptive encryption; all frequency bands receive identical
+     chaotic processing regardless of spatial complexity.
+
+10. RESEARCH GAP
+    The scheme encrypts all image regions uniformly after frequency decomposition.
+    No block-level texture analysis is performed — smooth regions (sky, skin)
+    receive the same heavy encryption as complex textures (edges, objects).
+    This results in unnecessary computational overhead and missed opportunity
+    for efficiency-security trade-offs based on local image content.
+
+
+================================================================================
+PAPER 4: A Texture-Adaptive Hierarchical Encryption Method for
+         High-Resolution Remote Sensing Images
+Authors: J. Tang, X. Jiang, C. Huang, C. Deng, M. Deng, Z. Huang, J. Deng
+         & X. Zhou (2025)
+Journal: Remote Sensing, 17, 2940
+================================================================================
+
+1. RESEARCH OBJECTIVE
+   To balance high security and computational efficiency for large-scale remote
+   sensing image encryption by classifying image blocks based on texture
+   complexity and applying hierarchical chaotic encryption accordingly.
+
+2. TEXTURE FEATURES USED
+   Information Entropy used to classify each image block into one of three
+   categories: Simple, Medium, and Complex. Classification is based on
+   predefined entropy thresholds combined with empirical prior knowledge.
+   No machine-learning classifier is used.
+
+3. ENCRYPTION ALGORITHM
+   • Image is spatially partitioned into blocks.
+   • Blocks classified into Simple/Medium/Complex via entropy thresholds.
+   • Simple blocks: 1D Logistic-Tent system (lightweight XOR diffusion).
+   • Medium blocks: 2D LASM (sorting-based permutation + XOR diffusion).
+   • Complex blocks: 4D Hyperchaotic Rössler (CMT scrambling + XOR diffusion).
+   • Final global XOR pass using 1D Logistic to eliminate inter-block correlation.
+
+4. CHAOTIC MAPS / CRYPTOGRAPHIC METHODS
+   • 1D Logistic-Tent System (LTS) — for simple blocks and global pass.
+   • 2D Logistic-adjusted-Sine Map (LASM) — for medium blocks.
+   • 4D Hyperchaotic system — for complex blocks.
+   • Passphrase-derived keys via SHA-based key derivation.
+
+5. DATASET / IMAGES USED
+   High-resolution remote sensing images at multiple scales:
+   256×256, 512×512, 1024×1024, 2048×2048, 4096×4096 (from figshare).
+
+6. SECURITY METRICS
+   ┌────────────────────┬──────────┬──────────┬──────────┐
+   │ Image Size         │ NPCR (%) │ UACI (%) │ Entropy  │
+   ├────────────────────┼──────────┼──────────┼──────────┤
+   │ 256×256            │ 99.6205  │ 33.5417  │ 7.99717  │
+   │ 512×512            │ 99.6066  │ 33.4559  │ 7.99929  │
+   │ 1024×1024          │ 99.6054  │ 33.4659  │ 7.99982  │
+   │ 2048×2048          │ 99.6095  │ 33.4514  │ 7.99995  │
+   │ 4096×4096          │ 99.6112  │ 33.4690  │ 7.99998  │
+   └────────────────────┴──────────┴──────────┴──────────┘
+   Correlation: near 0 in H, V, D directions for encrypted images.
+   Key Space: ≥10^60 (from 4D hyperchaotic initial values alone).
+   Encryption Time (4096×4096): 9014 ms — faster than all competing methods.
+
+7. EXPERIMENTAL RESULTS
+   • All NPCR/UACI values exceed standard thresholds at α=0.05.
+   • Significant efficiency gains for large images (9014 ms vs 32163 ms for
+     AES-based competitor at 4096×4096).
+   • Histograms become uniformly distributed after encryption.
+   • Lossless decryption — recovered images are identical to originals.
+
+8. STRENGTHS
+   • Direct block-level texture adaptation — first to apply hierarchical
+     chaotic encryption based on content complexity for remote sensing.
+   • Excellent scalability: parallelisable block-wise processing.
+   • Superior efficiency for large-scale data without sacrificing security.
+   • Global diffusion pass removes visible block artefacts.
+
+9. LIMITATIONS
+   • Texture classification relies on predefined entropy thresholds based on
+     empirical knowledge — not universally optimal for all image types.
+   • Auxiliary metadata (block classifications, padding) must be securely
+     transmitted alongside ciphertext for correct decryption.
+   • Designed specifically for remote sensing; not validated on medical,
+     natural, or general-purpose images.
+   • No machine-learning-based automatic block classification.
+
+10. RESEARCH GAP
+    The closest approach to our system, but uses ONLY information entropy as
+    the single texture metric for block classification. Entropy alone cannot
+    capture directional textures, edge patterns, or multi-scale spatial
+    features (e.g., GLCM contrast, homogeneity, correlation). The paper
+    itself acknowledges that future work should use "machine learning to
+    automatically classify image blocks and optimize encryption levels."
+    This is exactly what our 3-Tier system implements using GLCM + Random
+    Forest classification.
+
+
+================================================================================
+PAPER 5: OptiSecure-3D: Compressed Image Encryption Using Optimized
+         3D Chaotic Maps with Stacked Autoencoder
+Authors: A. Tiwari, P. Diwan, T.D. Diwan, M. Miroslav & S.P. Samal (2025)
+Journal: Scientific Reports, 15:14151
+================================================================================
+
+1. RESEARCH OBJECTIVE
+   To develop a compressed image encryption algorithm that uses a Stacked
+   Autoencoder (SAE) for dimensionality reduction and Differential Evolution
+   (DE) to optimise 3D Arnold Cat Map parameters for maximum security.
+
+2. TEXTURE FEATURES USED
+   High-dimensional latent features extracted by a Stacked Autoencoder (SAE).
+   These are compression features, not spatial texture features. No block-level
+   texture analysis (GLCM, entropy, edge density) is performed.
+
+3. ENCRYPTION ALGORITHM
+   • SAE compresses the input image into a lower-dimensional latent space.
+   • 3D Arnold Cat Map (ACM) generates chaotic permutation/diffusion sequences.
+   • Differential Evolution optimises ACM parameters (a, b, c, d, e, f) by
+     minimising a multi-objective fitness function (entropy + correlation).
+   • XOR-based diffusion with optimised chaotic sequences.
+   • Asymmetric encryption layer for key exchange.
+
+4. CHAOTIC MAPS / CRYPTOGRAPHIC METHODS
+   • 3D Arnold Cat Map — primary chaotic engine.
+   • Differential Evolution (DE) — metaheuristic optimiser for map parameters.
+   • Stacked Autoencoder (SAE) — deep learning compression.
+
+5. DATASET / IMAGES USED
+   • Set5, Set14 (super-resolution benchmarks).
+   • Brain MRI, Eye Fundus (medical imaging from Kaggle).
+   • Standard images: Lena, Butterfly.
+   • Image sizes: 128×128, 256×256, 512×512, 1024×1024.
+
+6. SECURITY METRICS
+   ┌───────────────────┬──────────────────────────────────────────────────┐
+   │ Metric            │ Values (across images/sizes)                    │
+   ├───────────────────┼──────────────────────────────────────────────────┤
+   │ NPCR (%)          │ 99.43 – 99.89 (mean ≈ 99.80)                   │
+   │ UACI              │ 0.3341 – 0.3350 (≈33.46%)                      │
+   │ Entropy (mean)    │ 7.9984                                         │
+   │ Correlation (mean)│ 0.005 (near zero)                              │
+   │ Enc. Time (s)     │ 0.15 (fastest among all compared methods)      │
+   └───────────────────┴──────────────────────────────────────────────────┘
+   Robust under Gaussian noise (σ=10–25) and Salt & Pepper noise (p=0.01–0.1).
+   PSNR of decrypted images under noise: ≈27.8–27.9 dB.
+
+7. EXPERIMENTAL RESULTS
+   • NPCR of 99.89% with z-score > 1.96 (statistically significant at 95%).
+   • OptiSecure-3D outperforms five state-of-the-art methods (2019–2023) in
+     NPCR, UACI, and encryption time.
+   • Consistent low correlation across all channels and directions.
+   • Strong noise resilience with low standard deviation across tests.
+
+8. STRENGTHS
+   • Evolutionary optimisation guarantees near-optimal chaotic parameters.
+   • SAE compression reduces data volume before encryption.
+   • Comprehensive multi-dimensional security evaluation.
+   • Very fast encryption time (0.15 s) due to compressed domain processing.
+
+9. LIMITATIONS
+   • SAE requires pre-training on a representative dataset — adds significant
+     computational overhead and GPU dependency.
+   • Compression via SAE is lossy — decoded images are approximations.
+   • No block-level or region-level spatial adaptation; the entire image is
+     processed uniformly after compression.
+   • Potential computational challenges for dynamic multimedia formats.
+
+10. RESEARCH GAP
+    Replaces spatial texture analysis with deep learning feature extraction.
+    The entire image is treated uniformly — no differentiation between smooth
+    and complex regions. The heavy SAE + DE pipeline requires GPU hardware
+    and significant training time, making it impractical for resource-
+    constrained or real-time deployments. No lightweight, interpretable
+    texture classification (like GLCM + Random Forest) is explored.
+
+
+================================================================================
+PAPER 6: SCD-CHAOS: Dynamic S-Box and Chaotic Hybrid Encryption for
+         Secure 8-bit Image Encryption in Real-Time IoT Systems
+Authors: Yogi, Majumdar, Ghosh et al. (2026)
+Journal: Journal of Supercomputing (Springer) — Accepted Manuscript
+================================================================================
+
+1. RESEARCH OBJECTIVE
+   To design a lightweight, real-time chaotic encryption scheme optimised for
+   IoT and edge computing environments, using a hybrid dual-map system with
+   dynamic S-box substitution for maximum security at minimal resource cost.
+
+2. TEXTURE FEATURES USED
+   None explicitly for block classification. Entropy is used only for dynamic
+   S-box generation, not for content-adaptive encryption. All image regions
+   receive identical encryption processing.
+
+3. ENCRYPTION ALGORITHM
+   Three-stage pipeline:
+   • Permutation: Tent Map generates pseudo-random indices for pixel reordering.
+   • Diffusion: Henon Map generates XOR key sequences for pixel value masking.
+   • Confusion: Dynamic S-box substitution derived from hybrid chaotic key.
+   Operates on 64×64 RGB images (pre-downscaled from original resolution).
+
+4. CHAOTIC MAPS / CRYPTOGRAPHIC METHODS
+   • Tent Map — permutation layer (pixel position shuffling).
+   • Henon Map — diffusion layer (XOR-based value masking).
+   • Hybrid Key — combined Tent + Henon sequences for S-box generation.
+   • SHA-256 dynamic seed for key space expansion.
+
+5. DATASET / IMAGES USED
+   SIPI Image Database (USC): Peppers, Tree, House, Airplane.
+   All images downscaled to 64×64 before encryption.
+   IoT validation: ESP32-WROOM-32 and ARM Cortex-M4 (STM32F407VG).
+
+6. SECURITY METRICS
+   ┌───────────────────┬─────────────────────────────────────────────┐
+   │ Metric            │ Values (mean across 4 test images)         │
+   ├───────────────────┼─────────────────────────────────────────────┤
+   │ NPCR (%)          │ 99.6226 (range: 99.6095 – 99.6375)        │
+   │ UACI (%)          │ 33.4732 (range: 33.4251 – 33.5123)        │
+   │ Entropy (bits)    │ 7.9991 (near-ideal across all channels)    │
+   │ MSE               │ 6904.83 (mean)                             │
+   │ PSNR (dB)         │ 9.6250 (strong distortion = good)         │
+   │ SSIM (Orig vs Enc)│ 0.00195 (near zero = excellent)           │
+   │ Correlation       │ Near 0 in all H, V, D directions           │
+   │ Key Space         │ ≈2^512 ≈ 10^154                           │
+   │ Lyapunov (Hybrid) │ 1.45–1.46 (strong chaos)                  │
+   │ Enc. Time (64×64) │ 0.00619 s                                 │
+   │ Enc. Time (256×256)│ 0.10987 s (desktop), 0.38 s (ESP32)      │
+   └───────────────────┴─────────────────────────────────────────────┘
+
+7. EXPERIMENTAL RESULTS
+   • All metrics exceed standard academic thresholds.
+   • Near-perfect entropy (7.9991 bits) confirms complete pixel randomisation.
+   • SSIM ≈ 0.002 between original and encrypted, 0.9994 between original and
+     decrypted — confirming both strong encryption and perfect reversibility.
+   • Successfully deployed on ESP32 and STM32 IoT hardware with < 0.5 W power.
+   • NIST randomness tests passed.
+
+8. STRENGTHS
+   • Extremely fast: 0.006 s for 64×64 images, feasible for real-time IoT.
+   • Very low memory footprint: 480–520 KB RAM on embedded hardware.
+   • Massive key space (2^512) with SHA-256 seeding.
+   • Dynamic S-box provides non-linear confusion, enhancing avalanche effect.
+   • Validated on real IoT hardware (not just simulation).
+
+9. LIMITATIONS
+   • All images must be downscaled to 64×64 before encryption — severe
+     resolution sacrifice. Original high-resolution data is permanently lost.
+   • Not practical for medical imaging, satellite imagery, or any application
+     requiring pixel-perfect fidelity.
+   • No content-adaptive or texture-based encryption; every pixel region
+     undergoes the same permutation-diffusion-confusion pipeline.
+
+10. RESEARCH GAP
+    Achieves impressive real-time performance but ONLY by drastically
+    sacrificing image resolution (64×64). This makes the scheme impractical
+    for any domain requiring high-resolution encrypted images (medical,
+    remote sensing, surveillance). No block-level texture analysis is used —
+    all regions receive identical encryption regardless of content complexity.
+
+
+================================================================================
+PAPER 7: Multi-Party Reversible Data Hiding in Shared Medical Images
+         Using Texture-Guided Hierarchical Quantization Coding
+Authors: W. Wan, Y. Wang, Z. Gu et al. (2025)
+Journal: J. King Saud University — Computer and Information Sciences, 37:29
+================================================================================
+
+1. RESEARCH OBJECTIVE
+   To design a multi-party reversible data hiding scheme for medical images
+   that supports role-based access control (patient, hospital, doctor) while
+   maximising embedding capacity through texture-guided encoding.
+
+2. TEXTURE FEATURES USED
+   Edge Pixel Density via the Canny Operator. Each w×l block is classified as:
+   • PE (Smooth): edge density ρ ≤ 0.1
+   • MMD (Moderate): 0.1 < ρ ≤ 0.2
+   • MND (Textured): ρ > 0.2
+   This drives differentiated difference-generation (not encryption strength).
+
+3. ENCRYPTION ALGORITHM
+   • Texture-Guided Hierarchical Quantization Coding (TGHQC): classifies
+     blocks, generates adaptive differences, applies hierarchical encoding.
+   • Polynomial-based secret image sharing (Shamir's Secret Sharing).
+   • Dual-level embedding: Level 1 (metadata in polynomial coefficients),
+     Level 2 (secret data in share pixel blocks).
+   • Lagrange interpolation for recovery.
+
+4. CHAOTIC MAPS / CRYPTOGRAPHIC METHODS
+   • Shamir's Secret Sharing — polynomial-based (t,n) threshold scheme.
+   • No chaotic maps are used for encryption.
+   • MED predictor for PE block difference generation.
+
+5. DATASET / IMAGES USED
+   • COVID-CT dataset (Yang et al. 2020) — 4 medical test images, 512×512.
+   • Classic standard images for comparison (Peppers, Airplane, etc.).
+   • BOSSBase and BOWS-2 datasets for embedding rate benchmarking.
+
+6. SECURITY METRICS
+   ┌────────────────────┬───────────────────────────────────────┐
+   │ Metric             │ Values                                │
+   ├────────────────────┼───────────────────────────────────────┤
+   │ PSNR (shares)      │ 9.56 – 10.12 dB (strong visual sec.) │
+   │ SSIM (shares)      │ 0.008 – 0.014 (near zero)            │
+   │ Recovered PSNR     │ ∞ (lossless reconstruction)           │
+   │ Recovered SSIM     │ 1.000                                 │
+   │ Embedding Rate     │ 3.65 – 6.37 bpp (threshold-dependent)│
+   │ Data Expansion     │ ≤ 1 (no expansion)                    │
+   │ NPCR / UACI        │ Not evaluated                         │
+   │ Entropy            │ Not evaluated                         │
+   └────────────────────┴───────────────────────────────────────┘
+
+7. EXPERIMENTAL RESULTS
+   • Perfect lossless reconstruction (PSNR = ∞, SSIM = 1.000) for all images.
+   • Shares appear as noise (PSNR ≈ 9–10 dB, SSIM ≈ 0.01).
+   • TGHQC achieves higher embedding rates than 5 competing RDHEI methods
+     on BOSSBase and BOWS-2 datasets.
+   • Average embedding rate of 4.5433 bpp on the medical dataset.
+   • Lower algorithmic complexity than all compared schemes.
+
+8. STRENGTHS
+   • Complete lossless recovery — critical for medical imaging.
+   • Multi-party access control: patient, hospital, and doctor each have
+     differentiated key-based access to image regions and embedded data.
+   • Texture-guided encoding maximises embedding capacity.
+   • No data expansion — shares are same size as original.
+   • Separable: image recovery and data extraction are independent.
+
+9. LIMITATIONS
+   • Focused on data hiding, NOT image encryption. Does not provide
+     cryptographic security metrics (NPCR, UACI, entropy, correlation).
+   • No chaotic map integration — relies entirely on polynomial sharing.
+   • Lower payload capacity compared to dedicated encryption methods.
+   • Texture classification uses only edge density (Canny) — a single metric
+     that misses textural richness captured by multi-feature analysis.
+
+10. RESEARCH GAP
+    Demonstrates the value of texture-guided block classification for medical
+    images but applies it only to data embedding, not encryption strength.
+    The Canny-based edge density is a single feature — it cannot capture the
+    full textural complexity measured by multi-feature approaches (GLCM
+    contrast, dissimilarity, homogeneity, energy, correlation + local entropy).
+    No chaotic encryption is used, limiting cryptographic applicability.
+
+
+================================================================================
+                    CONSOLIDATED RESEARCH GAPS ACROSS ALL PAPERS
+================================================================================
+
+  GAP 1 — NO SPATIAL TEXTURE ADAPTATION FOR ENCRYPTION STRENGTH (Papers 1,2,5,6)
+  Most schemes apply identical encryption globally. Smooth regions receive
+  the same heavy computation as complex textures, wasting resources.
+
+  GAP 2 — SINGLE-METRIC TEXTURE CLASSIFICATION (Papers 4, 7)
+  Paper 4 uses only information entropy; Paper 7 uses only edge density.
+  Neither captures the full multi-directional textural richness available
+  through GLCM-based multi-feature analysis.
+
+  GAP 3 — NO ML-BASED ADAPTIVE BLOCK CLASSIFICATION (ALL PAPERS)
+  None of the six papers use a trained ML classifier (Random Forest, SVM,
+  etc.) to automatically and adaptively route image blocks to different
+  encryption tiers based on multi-feature texture descriptors.
+
+  GAP 4 — RESOLUTION SACRIFICE FOR SPEED (Paper 6)
+  Real-time IoT performance achieved only by downscaling to 64×64 —
+  impractical for high-resolution applications.
+
+  GAP 5 — LOSSY RECONSTRUCTION (Papers 2, 5)
+  DWT and SAE compression introduce irreversible quality loss — unacceptable
+  for medical/forensic domains requiring pixel-perfect fidelity.
+
+  GAP 6 — HEAVY COMPUTATIONAL OVERHEAD (Paper 5)
+  Deep learning (SAE + Differential Evolution) requires GPU hardware and
+  pre-training, limiting real-time and embedded deployment.
+
+
+================================================================================
+            HOW OUR 3-TIER ADAPTIVE SYSTEM ADDRESSES EVERY GAP
+================================================================================
+
+  ✓ GAP 1 → GLCM-based block-level texture analysis adapts encryption
+             strength per region (Smooth → Logistic, Medium → Lorenz,
+             Rough → Hyperchaotic Chen).
+
+  ✓ GAP 2 → Uses 5+ texture features (GLCM contrast, dissimilarity,
+             homogeneity, energy, correlation + local entropy) — far richer
+             than entropy-only or edge-density-only classification.
+
+  ✓ GAP 3 → Trained Random Forest classifier automatically routes blocks
+             to the appropriate encryption tier — no manual thresholds.
+
+  ✓ GAP 4 → Encrypts full-resolution images (256×256, 512×512+) with no
+             downscaling required.
+
+  ✓ GAP 5 → 100% lossless decryption verified (PSNR = ∞, SSIM = 1.0).
+
+  ✓ GAP 6 → Lightweight Random Forest + NumPy vectorisation — no GPU needed,
+             runs on standard consumer hardware.
+
+================================================================================
+                              END OF LITERATURE REVIEW
+================================================================================

@@ -1,0 +1,1836 @@
+Academic Editors: Junping Zhang,
+Liguo Wang, Haixia Bi, Cuiping Shi
+and Chaonan Ji
+Received: 25 June 2025
+Revised: 18 August 2025
+Accepted: 22 August 2025
+Published: 24 August 2025
+Citation:
+Tang, J.; Jiang, X.;
+Huang, C.; Ding, C.; Deng, M.;
+Huang, Z.; Duan, J.; Zhu, X.
+Texture-Adaptive Hierarchical
+Encryption Method for Large-Scale
+HR Remote Sensing Image Data.
+Remote Sens. 2025, 17, 2940.
+https://doi.org/10.3390/
+rs17172940
+Copyright: © 2025 by the authors.
+Licensee MDPI, Basel, Switzerland.
+This article is an open access article
+distributed under the terms and
+conditions of the Creative Commons
+Attribution (CC BY) license
+(https://creativecommons.org/
+licenses/by/4.0/).
+Article
+Texture-Adaptive Hierarchical Encryption Method for
+Large-Scale HR Remote Sensing Image Data
+Jianbo Tang 1, Xingxiang Jiang 2, Chaoyi Huang 1, Chen Ding 3,*, Min Deng 1, Zhengyuan Huang 1, Jia Duan 2
+and Xiaoye Zhu 2
+1
+Department of Geo-Informatics, Central South University, Changsha 410083, China;
+jianbo.tang@csu.edu.cn (J.T.); 245007006@csu.edu.cn (C.H.); dengmin@csu.edu.cn (M.D.);
+8211210204@csu.edu.cn (Z.H.)
+2
+Hunan Engineering Research Center of Geographic Information Security and Application, The Third
+Surveying and Mapping Institute of Hunan Province, Changsha 410000, China; sjyy@hnpgc.com (X.J.);
+sjgl@hnpgc.com (J.D.); gczx@hnpgc.com (X.Z.)
+3
+Beidou Research Institute, South China Normal University, Foshan 528225, China
+*
+Correspondence: jagndc@csu.edu.cn or dingchen@m.scnu.edu.cn; Tel.: +86-1511395244
+Abstract
+High-resolution (HR) remote sensing images contain rich, sensitive information regarding
+the distribution of geospatial objects and natural resources. With the widespread applica-
+tion of HR remote sensing images, there is an urgent need to protect the data security of HR
+remote sensing images during transmission and sharing. Existing encryption approaches
+typically employ a global encryption strategy, overlooking the varying texture complexity
+across different sub-regions in HR remote sensing images. This oversight results in low
+efficiency and flexibility for encrypting large-scale remote sensing image data. To address
+these limitations, this paper presents a texture-adaptive hierarchical encryption method
+that combines region-specific security levels. The method first decomposes remote sens-
+ing images into grid-based sub-blocks and classifies them into three texture complexity
+types (i.e., simple, medium, and complex) through gradient and frequency metrics. Then,
+chaotic systems of different dimensions are adaptively adopted to encrypt the sub-blocks
+according to their texture complexity. A more complex chaotic system encrypts a sub-block
+with a more complex texture to ensure security while reducing computational complexity.
+The experimental results on publicly available high-resolution remote sensing datasets
+demonstrate that the proposed method achieves adequate information concealment while
+maintaining an optimal balance between encryption security and computational efficiency.
+The proposed method is more competitive in encrypting large-scale HR remote sensing
+data compared to conventional approaches, and it shows significant potential for the secure
+sharing and processing of HR remote sensing images in the big data era.
+Keywords: remote sensing image encryption; data sharing; information security; multilevel
+partition; texture features
+1. Introduction
+High-resolution (HR) remote sensing image data are an essential type of national
+fundamental geographic data that can clearly and intuitively represent the distribution of
+geographical features on the Earth’s surface, such as urban distribution and land use [1–6].
+With the advancement of satellite technology and enhanced remote sensing capabilities,
+data acquisition and applications have significantly improved [7–10]. HR remote sensing
+Remote Sens. 2025, 17, 2940
+https://doi.org/10.3390/rs17172940
+Remote Sens. 2025, 17, 2940
+2 of 27
+images contain rich, sensitive information regarding the distribution of geospatial objects
+and natural resources. Given the widespread use of HR remote sensing images, there is
+an urgent need to safeguard the data security of these images during transmission and
+sharing [11–13]. The rapid development of remote sensing big models and deep learning
+applications has introduced new security vulnerabilities during the training and application
+phases. These include model inversion attacks that can reconstruct sensitive geographical
+features from training data, adversarial sample attacks that manipulate environmental mon-
+itoring results, gradient leakage that exposes satellite imaging characteristics, and metadata
+inference that reveals the protected geolocation patterns. These AI-specific vulnerabilities,
+compounded by traditional security challenges during network transmission and data shar-
+ing, necessitate advanced protection frameworks that address both data-level encryption
+and model-level privacy preservation. However, existing encryption approaches typically
+employ a global encryption strategy, overlooking the varying texture complexity across
+different sub-regions in remote sensing images. This oversight results in low efficiency and
+flexibility in encrypting large-scale HR remote sensing image data.
+Although remote sensing image encryption possesses unique characteristics, its un-
+derlying techniques remain rooted in the evolutionary trajectory of general-purpose image
+encryption methodologies. Traditional approaches can be broadly categorized into sym-
+metric encryption, asymmetric encryption, and hybrid encryption. Symmetric schemes,
+exemplified by AES and DES, employ a single secret key for both encryption and de-
+cryption, leveraging computational efficiency to dominate real-time encryption scenarios;
+however, their key-distribution mechanisms face significant challenges in distributed re-
+mote sensing environments [14]. Asymmetric algorithms, such as RSA and ECC, resolve
+key-management issues through public-key infrastructures, yet their high computational
+complexity limits applicability to large-scale remote sensing datasets. Hybrid encryption
+achieves a pragmatic balance by utilizing asymmetric techniques for key exchange while
+relying on symmetric ciphers for bulk data encryption, thereby emerging as a compromise
+solution for current remote sensing data-sharing paradigms. Recent advancements have
+integrated chaotic systems and DNA encoding to enhance randomness and resistance
+against statistical attacks [15]. Some neural-network-based image encryption methods
+employing deep learning models have also been proposed to optimize cryptographic trans-
+formations adaptively, offering novel perspectives for protecting complex remote sensing
+textures [14]. Nevertheless, these generic methods predominantly adopt global encryption
+strategies, disregarding spatial disparities in texture complexity within remote sensing im-
+agery. Consequently, low-entropy regions are excessively encrypted, whereas high-entropy
+areas receive insufficient protection, resulting in computational redundancy and flexibility
+deficits [1]. Furthermore, emerging technologies such as homomorphic encryption and
+lattice-based cryptography, while enabling ciphertext-domain remote sensing analyses,
+suffer from prohibitive latency that undermines real-time requirements [16].
+To address the limitations of global encryption strategies and reconcile the tension
+between security, efficiency, and real-time performance, this study presents a texture-
+adaptive hierarchical encryption method for large-scale HR remote sensing image data.
+In this study, texture complexity is formally defined and quantified using information
+entropy, which measures the uncertainty and information content of pixel distributions in
+a given image block. Entropy is adopted because it provides a concise and computationally
+efficient proxy for texture variability, and it has been widely used as a statistical measure
+in remote sensing analysis. By leveraging entropy as the guiding metric, our method can
+adaptively assign stronger encryption operations to regions with higher texture complexity
+while reducing unnecessary computation in low-complexity areas. The goal of this paper
+is to solve the problem of how to balance high security and computational efficiency in
+Remote Sens. 2025, 17, 2940
+3 of 27
+the encryption of HR remote sensing image data. To solve this problem, a new selective
+encryption method based on texture complexity classification is designed.
+The remainder of this paper is organized as follows. Section 2 reviews related work
+on remote sensing image-data encryption. In Section 3, the framework and details of the
+proposed texture-adaptive hierarchical encryption method are described. Section 4 presents
+experiments and a comparative study to evaluate the effectiveness of the proposed method.
+Finally, conclusions and a discussion are presented in Section 5.
+2. Related Work
+2.1. Traditional Image Encryption Methods
+Raster geographic data (remote sensing imagery) mostly share similar data represen-
+tations with conventional image data, allowing encryption research to draw on established
+image encryption theories [17,18]. The earliest image encryption theories originated from
+classical text encryption theories and cryptosystems, transforming image information into
+chaotic ciphertexts using mathematical or physical approaches to make the plaintext invis-
+ible to the human eye after encryption [19–21]. Currently, research on image encryption
+theory is relatively abundant, mainly including image encryption methods based on tradi-
+tional encryption algorithms [22–25], chaos-based image encryption [26–31], block-based
+image encryption [32–35], compressed sensing-based image encryption [27,36,37], and
+DNA coding-based image encryption [38–42].
+In the initial stages of image encryption research, traditional encryption algorithms
+were predominantly used to secure image data. These methods typically involved sym-
+metric or asymmetric algorithms to encrypt crucial pixel information, taking advantage of
+the security features of the established encryption techniques for robust defense against
+attacks [43–45]. However, unlike ordinary text, image data have unique formats and charac-
+teristics, such as large volume, high redundancy, strong correlation, and a two-dimensional
+distribution, which means that traditional encryption methods are only partially suitable
+for image encryption needs [46,47]. Chaos-based encryption employs chaotic systems
+to encrypt the positions or values of image pixels [48]. Chaotic systems, renowned for
+their sensitivity to initial conditions, unpredictability, and complex bifurcation properties,
+offer exceptional cryptographic capabilities [49]. Therefore, they have been widely applied
+in image encryption, particularly through two-dimensional chaotic map functions that
+shuffle the pixel positions to achieve encryption. The performance of chaotic systems
+directly affects the encryption outcomes. Many researchers have explored new chaotic
+systems based on classical systems to enhance performance, induce more complex chaotic
+behaviors, and expand the range of chaos, thereby increasing the security of encrypted
+images [49–51]. Although more complex chaotic systems offer superior protection, they
+also incur greater computational complexity. To address this issue, some researchers have
+integrated image compression into chaotic image encryption schemes [52–55]. Directly
+applying nonlinear transformations in low-dimensional chaos-based encryption may pose
+security risks and lead to data expansion issues [56,57]. The inherent “high security–high
+complexity” dilemma is particularly pronounced in continuous chaotic systems. Early
+image encryption schemes predominantly relied on such systems: Yang et al. [58] con-
+structed a fractional-order hyperchaotic system derived from the Lorenz oscillator, which
+theoretically yields two positive Lyapunov exponents. However, the associated differen-
+tial equations must be solved by Adomian decomposition or Runge–Kutta integrators,
+resulting in an encryption time >3 s for a single 512 × 512 image [59]. Ma et al. intro-
+duced an offset-based multi-stable continuous system capable of exhibiting four coexisting
+attractors simultaneously, yet the unavoidable numerical integration overhead prevents
+real-time deployment on FPGA/ARM platforms [60]. This “high security–low efficiency”
+Remote Sens. 2025, 17, 2940
+4 of 27
+trade-off has motivated a paradigm shift toward discrete maps. One-dimensional maps
+such as Logistic and Tent gained immediate popularity due to their simple iterations and
+hardware-friendly implementations. Nevertheless, Hua et al. [61] demonstrated that their
+monolithic structure limits the number of positive LEs to at most one and renders them sus-
+ceptible to periodic windows and dynamical degradation under finite-precision arithmetic.
+Choi et al. [62] combined the Arnold transformation with a Laplace expansion to construct a
+higher-dimensional Arnold system. Hua et al. [63] fused Logistic and Sine maps via an XOR-
+coupling mechanism to realize 2D/3D chaos. Despite these efforts, Liu et al. [64] proved that
+the positive-LE count in such systems remains far below the system dimension, failing to sat-
+isfy the “non-degenerate” condition and tending to collapse into short periodic sequences
+after quantization. To achieve the non-degenerate requirement “dimension = number of
+positive LEs,” Hua et al. [65] generalized the Arnold parameter matrix to arbitrary dimen-
+sions. They proposed the first configurable high-dimensional discrete system for which a
+positive-LE count can be prescribed. Wang et al. [66] and Zang et al. [67] further ensured
+that every dimension contributes a positive LE by employing “chaos inverse control” and
+“strictly diagonally dominant matrix” strategies, respectively. Liu et al. [68] incorporated
+nonlinear filters and feed-forward/feedback architectures to generate uniformly ergodic
+trajectories; their 4-D system encrypts a 1024 × 1024 image in only 0.42 s while achieving
+NPCR/UACI scores of 99.61%/33.47%. These results corroborate that discrete systems
+with ≤4 dimensions can be executed in real time on FPGA, and non-degenerate designs
+effectively suppress finite-precision degradation, thereby establishing both theoretical and
+practical foundations for 1-D/2-D/4-D hierarchical encryption. However, single-attractor
+systems become globally vulnerable once the key is compromised. Qin [69] observed
+that the number of equilibrium points is positively correlated with coexisting attractors.
+Ali et al. [70] devised a 1-D multi-stable map using dual sinusoidal functions with a phase
+parameter that enables switching among period-2, chaotic, and hyperchaotic regimes.
+Huang et al. [71] proposed a 3-D multi-stable hyperchaotic map featuring eight symmetric
+attractors. After introducing memristive elements, Ma et al. [72] realized seven coexist-
+ing dynamic modes. Further, Liu et al. [73] and Marco et al. [74] constructed discrete
+memristive multi-stable systems, theoretically expanding the key space to 2512. Regret-
+tably, existing schemes have not yet simultaneously fulfilled the dual requirements of
+“non-degenerate + multi-stable,” leaving a critical challenge for future research. Although
+compressed sensing improves transmission efficiency and reduces storage space, its sparse
+sampling nature might result in lossy image post-decryption. With the development of
+DNA computing, DNA coding has emerged as a novel field of cryptography [75]. This
+method uses DNA as an information carrier to convert binary sequences into DNA repre-
+sentations. It supports massive parallel computing, offers vast storage capacity, and has
+low power consumption, aligning well with the demands of image encryption in terms
+of efficiency and transmission [76–78]. Thus, combining molecular computations with
+biological methodologies has led to the proposal of many novel image encryption schemes.
+2.2. Encryption Methods for Remote Sensing Images
+Although traditional image encryption methods can be applied to remote sensing im-
+age encryption, considering the large data volume and comprehensive coverage of remote
+sensing images, standard image encryption methods cannot balance security and efficiency.
+Therefore, many studies on HR remote sensing image encryption have been conducted.
+For example, Zhang et al. improved an AES-based image block encryption method by
+introducing chaotic systems [79]. They grouped sequences from remote sensing images
+and random sequences generated by chaotic systems into large fixed-length integers to
+realize AES block encryption. This symmetric approach was experimentally validated and
+Remote Sens. 2025, 17, 2940
+5 of 27
+demonstrated high security and efficiency. Given the large data volume of remote sensing
+images, drawbacks of small critical space, and poor randomness of low-dimensional chaotic
+systems, Xu et al. presented a remote sensing image encryption approach using compound
+chaotic neurons and tent maps [80]. Ye et al. introduced a new block-based encryption
+technique for remote sensing images that employs image partitioning [81]. These block
+shuffling and diffusing operations are applied to large images with fast encryption speed.
+Encryption methods primarily address the issues of large amounts of remote sensing
+image data and communication security, building upon and innovating existing image
+encryption methods.
+Although in-depth studies on image encryption have been conducted from different
+perspectives, most current image encryption methods apply the same encryption algorithm
+to the entire spatial area of remote sensing images, neglecting the differences in texture
+complexity in remote sensing images, which leads to high computational complexity and
+poor adaptability and scalability of the encryption algorithms for HR remote sensing image
+content. HR remote sensing images are characterized by high resolution, large data volume,
+comprehensive coverage, multiple bands, and rich texture features, with different regions
+containing varying amounts of information [82]. As illustrated in Figure 1, the texture
+features and information content embodied in various areas of remote sensing images vary
+significantly. Regions such as region A (lakes) show simpler textures with less valuable
+geographic information. In contrast, regions such as regions B (harbors) and C (building
+groups) show complex textures with richer and more sensitive geographic information.
+Figure 1. Illustration of the differences in texture features in the remote sensing image. Region A
+corresponds to a lake area with simple texture and low information content (entropy: 1.95); Region
+B corresponds to a harbor area with medium texture complexity (entropy: 4.87); and Region C
+corresponds to a building group with complex texture and high information content (entropy: 7.64).
+Most existing remote sensing image encryption methods use a unified global en-
+cryption strategy that overlooks the uneven distribution of information content within
+remote sensing images. The uniform global encryption paradigm is inherently limited in
+two fundamental respects. First, it incurs unnecessary computational overhead: in high-
+resolution remote sensing images, 30–70% of the pixels—typically found in texture-flat
+and semantically low-value regions such as lakes, bare soil, or cloud cover—demand only
+modest security. Yet global encryption methods usually apply the same high-intensity
+permutation-diffusion primitives to these low-value pixels as it does to high-value regions,
+resulting in substantial redundant computation. Second, they fail to provide differentiated
+protection: a monolithic security level cannot discriminate between semantically dense
+areas and semantically sparse ones. Consequently, the scheme cannot simultaneously opti-
+Remote Sens. 2025, 17, 2940
+6 of 27
+mize efficiency and fidelity. In short, global encryption methods lack a content-adaptive
+authorization mechanism; they neither afford additional safeguards for sensitive regions
+nor release computational resources for sparse areas, thereby rendering them ill-suited to
+the complex security requirements of HR remote sensing imagery across diverse application
+and terminal contexts [83]. Inspired by content-based multilevel authorization schemes
+for remote sensing image data [84–86], this study proposes a texture-adaptive hierarchical
+encryption method for large-scale HR remote sensing image data. The novel idea involves
+applying encryption techniques of varying security levels to sub-regions with differing
+degrees of texture complexity in the remote sensing image. A simple and faster encryption
+algorithm is used for regions with less available information, while a safe and slower
+encryption algorithm is employed for areas with complex texture features (characterizing
+regions with rich and sensitive information). This hierarchical encryption strategy allows
+for the adaptive selection of more appropriate encryption algorithms based on the regional
+characteristics of remote sensing image data. In this manner, remote sensing image data
+can be effectively protected while avoiding the pitfalls of weak security or low efficiency
+associated with the indiscriminate use of simple or complex encryption algorithms.
+3. Methodology
+3.1. Preliminaries
+Chaotic systems are commonly used to generate random sequences in cryptography,
+which is also the basis of many image-data encryption methods. Thus, this paper first
+defines and introduces concepts related to the chaotic systems used in our method.
+3.1.1. One-Dimensional Logistic-Tent Chaotic System
+The Logistic–Tent chaotic system (LTS) proposed by Zhou et al. is a novel one-
+dimensional (1D) chaotic system developed by integrating the Logistic and Tent chaotic
+systems as seed maps [87]. Compared with the seed maps, LTS has a more significant phase
+space and better chaotic performance. The 1D LTS is defined as follows:
+xn+1 =
+(
+(µxn(1 −xn) + (4 −µ) xn
+2 ) mod 1, xnϵ[0, 0.5)
+(µxn(1 −xn) + (4−µ)(1−xn)
+2
+) mod 1, xnϵ[0.5, 1]
+(1)
+where the control parameter µ ∈(0, 4), x is the variable of the system with values within
+[0, 1], and n is the iteration number.
+Through n iterations, n random numbers can be generated, and the sequence formed
+by these random numbers is the pseudo-random sequence produced by the chaotic sys-
+tem. This system maintains a chaotic state within the range of µ, offering better chaotic
+characteristics than the Logistic and Tent chaotic systems.
+3.1.2. Two-Dimensional Logistic-Adjusted-Sine Map
+The two-dimensional Logistic-Adjusted-Sine Map (2D-LASM) chaotic system is a
+novel two-dimensional (2D) chaotic system constructed by modulating the Logistic and
+Sine maps [88]. The 2D-LASM model is defined as follows:
+(
+xn+1 = sin(πµ(yn + 3)xn(1 −xn))
+yn+1 = sin(πµ(xn+1 + 3)yn(1 −yn))
+(2)
+where the control parameter µ ∈[0, 1], x and y are the variables of the system, and n is
+the iteration number. A 2D-LASM is constructed by integrating the Sine map and Logistic
+map; in the construction process, the logistic equation is first scaled by a factor of µ, and
+then the scaling result is fed as input to the Sine map; finally, the phase plane is extended
+Remote Sens. 2025, 17, 2940
+7 of 27
+from 1D to 2D. Unlike the individual Sine and Logistic maps, the interaction between the
+two input variables x and y in 2D-LASM creates a more complex system and makes output
+prediction more difficult.
+3.1.3. Four-Dimensional Hyperchaotic System
+Laarem proposed an improved four-dimensional (4D) autonomous chaotic system by
+introducing nonlinear state feedback to the first equation and a nonlinear cross-product
+term to the third equation of a three-dimensional Rössler chaotic system [89]. This leads to
+a hyperchaotic system with 12 terms and three nonlinearities and is formulated as follows:
+
+
+
+
+
+
+
+
+
+xn+1 = −yn −zn + wn
+yn+1 = xn + ayn −zn
+zn+1 = bn + zn(xn −c) + pxnwn
+wn+1 = −xnyn + qwn
+(3)
+where x, y, z, and w are the state variables, and a, b, c, p, and q are the system parameters.
+When a = 0.1, b = 0.1, c = 14, p = −20, and q = −0.28, the system exhibits hyperchaotic be-
+havior. The two positive Lyapunov exponents prove that it exhibits hyperchaotic behavior,
+and it is challenging to crack its parameters through brute-force attacks.
+3.2. Texture-Adaptive Hierarchical Encryption Method
+Inspired by content-based multilevel authorization of remote sensing image data, this
+paper proposes a texture-adaptive hierarchical encryption method for HR remote sensing
+images. This method is based on the complexity of texture features and adopts different
+encryption algorithms ranging from simple to complex with varying levels of security to
+match the diverse texture complexities within HR remote sensing (RS) images. Specifi-
+cally, simple encryption is used for uncomplicated textures (less sensitive information),
+whereas complex encryption algorithms are employed for regions with complex textures
+(more sensitive information). This approach allows for the adaptive selection of encryption
+algorithms that best fit the regional characteristics of RS images, thereby effectively pro-
+tecting the data while avoiding the pitfalls of weak security or inefficiency associated with
+the blanket application of basic or advanced encryption algorithms. The overall workflow
+of the proposed encryption approach is illustrated in Figure 2. First, the RS image was
+divided into blocks, and the information entropy of each sub-block was computed to cate-
+gorize them into distinct levels. Second, encryption algorithms are selected based on the
+characteristics of the image blocks to generate and encrypt the keys. Finally, the sub-blocks
+are stitched together, and further encryption is performed on the entire image to obtain the
+final encrypted image. The decryption process is the inverse of the steps above.
+3.2.1. Partition and Texture Complexity Classification of RS Images
+The method divides the RS image into equal-sized image blocks to measure the amount
+of information in different regions. Encryption processing is then applied to these image
+blocks. We assume that the original RS image is I, with a size of M × N, and the size of
+each image block is m × n. The numbers of rows and columns of the resulting blocks can
+be determined using the following formula:
+Row =
+(
+M
+m ,
+M mod m = 0
+l
+M
+n
+m
+,
+M mod m ̸= 0
+(4)
+Col =
+(
+N
+n ,
+N mod n = 0
+l
+N
+n
+m
+,
+N mod n ̸= 0
+(5)
+Remote Sens. 2025, 17, 2940
+8 of 27
+where Row is the row number of the image blocks, Col is the column number of the image
+blocks, ⌈∗⌉represents rounding, and mod refers to the modulo operation. The size of
+the image blocks (m, n) can be set according to the original image resolution and user
+requirements. In this study, m and n were set to 128. The image-processing flow is shown
+in Figure 3.
+Figure 2. Workflow of the proposed encryption approach.
+Furthermore, based on the number of rows and columns required for block-
+ing, the original remote sensing image was divided into blocks to obtain the im-
+age block set ImgSet = {I1, I2, . . . , Is}, where s = Row × Col, and s is the number
+of image blocks. Because the original remote sensing image may not be perfectly
+divided into image blocks, a row or column extension of the original image is re-
+Remote Sens. 2025, 17, 2940
+9 of 27
+quired. This section calculates the number of extended rows and columns using
+Equations (6) and (7), respectively.
+
+
+
+
+
+fm = M mod m
+addrow =
+(
+0,
+f m = 0
+m −fm, fm ̸= 0
+(6)
+
+
+
+
+
+fn = N mod n
+addcol =
+(
+0,
+f n = 0
+n −fn, fn ̸= 0
+(7)
+where addrow and addcol are the number of rows and columns to expand, respectively, and
+mod is the remaining operation function.
+ 
+Figure 3. Illustration of the partition and texture complexity classification of the RS image. (a) Original
+image; (b) expansion of image to meet block size requirements; (c) partition of image (numbers 1–3
+indicate example blocks); (d) classification of image according to texture complexity (simple, medium,
+and complex).
+The size of the comprehensive row matrix was addrow × N, and that of the extended
+column matrix was addcol × (M + addrow). This is based on the principle that better
+randomness of encrypted pixel values leads to higher security of RS images. Each element
+of the matrix was generated by a random number generator with a range of [0, 255].
+By default, the extended row matrix is concatenated at the bottom of the image and the
+comprehensive column matrix is attached to the rightmost side. Moreover, to ensure
+that the decrypted image is the same size as the original image, the number of vast rows
+and columns must be recorded as auxiliary information and saved in the header of the
+encrypted image for decryption.
+To ensure the security of image block encryption and enhance the sensitivity of the
+encryption key, the proposed method correlates the encryption key with remote sensing
+image data. Specifically, the sum of pixel values SUMt for each image block is first
+calculated. Then, to obtain the same encryption key during decryption, the sum of pixel
+values needs to be converted to the pixel value range of the image and stored; that is,
+the modulo 256 value SUM′
+t of each pixel sum is calculated using formula 8, and NumP
+is calculated using formula 9. We use SUM′
+t and NumP as parameters to generate the
+encryption key for each image block.
+ SUMt = ∑n
+j=1 ∑m
+i=1 Pi,j
+SUM′
+t = SUMt mod 256
+
+(8)
+NumP = (
+s
+∑
+t=1
+SUMt) mod 256
+(9)
+Remote Sens. 2025, 17, 2940
+10 of 27
+where Pi,j is the pixel value in row i and column j, m and n are the number of rows and
+columns of the image block, SUMt is the sum of the pixel values in the t-th image block,
+and s is the number of all image blocks.
+Specifically, assuming that the sum of pixel values of each image block is
+SUM = {SUM1, SUM2, . . . , SUMs}, a random integer matrix Q is constructed with
+elements ranging from 0 to 255, where the size of Q is 1 × (M + addrow). The first s posi-
+tions (M + addrow ≥s) of Q are used to record the SUM′
+t of each image block and record
+NumP at the (s+1)-th position of Q =
+
+SUM′
+1, SUM′
+2, . . . , SUM′
+s, NumP, . . .
+
+. Matrix Q
+is used as an input variable for encrypting each image block in the next step.
+Texture is an essential characteristic of remote sensing imagery, with more intri-
+cate textures containing richer details and representing a more significant amount of
+knowledge, embodying a greater amount of information from the image. Therefore,
+greater attention and protection should be provided during encryption in areas with
+more complex textures. This study introduces the concept of information entropy
+to assess texture complexity in remote sensing images. The image blocks are then
+classified into different levels based on their information entropy, as shown in Figure 3.
+Specifically, the information entropy proposed by Shannon was utilized to quantify
+the information content of each image block [27]:
+Ht = −
+L
+∑
+i=1
+pilogpi
+(10)
+where Ht represents the information entropy of the t-th image block It, L is the gray level
+of the image, pi is the ratio of the number of pixels with a value i in the block, and It is
+the total number of pixels in this block. For remote sensing image data with pixel values
+ranging from 0 to 255, the value range of information entropy is from 0 to 8. A greater
+value indicates that the image block contains more information and may have relatively
+complex texture features.
+The proposed method suggests that different RS images be divided based on user-
+defined thresholds. However, this study established threshold reference values by dividing
+a large sample of RS images into equal intervals, setting these thresholds at 2.67 and 5.34.
+Based on the information entropy of each image block, they were divided into three types:
+simple (Ct = 0), medium (Ct = 1), and complex (Ct = 2).
+Ct =
+
+
+
+
+
+0, Ht ∈[0, 2.67)
+1, Ht ∈[2.67, 5.34)
+2, Ht ∈[5.34, 8]
+(11)
+where Ct represents the type label of the image block It, Ht is the information entropy of It.
+The decryption process selects the corresponding decryption algorithm according
+to the type of each image block. Given that the decryption process selects the appropri-
+ate decryption algorithm based on the type of each image block, it is essential to save
+the type information (Ct) during encryption for subsequent retrieval during decryption.
+In this step, a random integer matrix W with a range of [0, 255] is generated to maintain
+the type information of each image block. The size of W is 1 × (M + addrow), where
+M + addrow ≥s, and the type information (Ct) of each image block is replaced in the
+first s numbers of W in the order of its block number t.
+3.2.2. Initial Encryption Parameter Generation
+This study adopts different local encryptions for different image blocks to improve the
+security of the entire encrypted RS image. For each image block It in the image block set, NumP
+Remote Sens. 2025, 17, 2940
+11 of 27
+and the corresponding SUM′
+t in the matrix Q as parameters are taken, and the commonly
+used password-based key derivation function PBKDF is applied to compute a derived key
+for each image block [90]. Then, the encryption key for each image block is calculated based
+on the derived key, so that the encryption keys for different image blocks are distinct. Here,
+the encryption key for each sub-image refers to the initial parameters of the chaotic system
+used, whereas for simple image blocks, the encryption key contains three parameters: the
+initial variable x0, control parameter µ, and iteration number k. For medium image blocks, it
+contains four parameters: initial variables x0 and y0, control parameter µ, and iteration number
+k. For complex image blocks, it has ten parameters: initial variables x0, y0, z0, and w0; control
+parameters a, b, c, p, and q; and iteration number k. The specific steps for generating image
+block encryption keys are as follows:
+(1) The salt value S and iteration count c are calculated using the following formulas:
+S = SM3(random(128)) ⊕SM3
+ PSt′ + NumP
+
+(12)
+c = NumP mod 100 + 1
+(13)
+where SM3 is a cryptographic hash algorithm, ⊕represents XOR operation, PSt is the
+value obtained by taking the sum of the pixel values of each image block modulo 256, mod
+represents modulo operation, and random(·) is a random number generator.
+(2) The passphrase P (the result of the user’s password after the SM3 calculation), salt
+S, and iteration count c are applied as inputs to the password-based key derivation function
+to generate the derived key DK.
+M(P, U) = SM3(P ⊕U)
+(14)
+
+
+
+
+
+
+
+
+
+U1 = M(P, S||INT(i))
+U2 = M(P, U1)
+. . . . . .
+Uc = M(P, Uc−1)
+(15)
+DK1
+
+DK2
+
+. . . . . .
+
+DK8 = T(256)
+(17)
+where M(P, U) denotes the hash message authentication code function based on SM3;
+U is a per-run, non-secret input that transforms the static master key P into a dy-
+namic, unique output M; ⊕represents XOR operation; and || represents the byte
+concatenation operator.
+(3) An 8×32-bit Derived Key Sequence DK is generated. From this sequence, the initial
+parameters for the chaotic encryption functions are calculated according to the complexity
+of the image block.
+For simple image blocks, the initial value x0, control variable µ and iteration number k
+are calculated as follows:
+
+
+
+
+
+x0 = |DK1|
+232
+µ = (|DK2| mod 4) + x0
+k = |DK1 + DK2| mod 28 + 28
+(18)
+where |·| denotes the absolute value and mod represents the modulo operation.
+Remote Sens. 2025, 17, 2940
+12 of 27
+For medium-complexity image blocks, the initial values x0, y0, control variable µ and
+iteration number k are calculated as follows:
+
+
+
+
+
+
+
+
+
+
+
+x0 = |DK3|
+232
+y0 = |DK4|
+232
+µ =
+c
+SUM′
+t (DK3
+L DK4) −
+h
+c
+SUM′
+t (DK3
+L DK4)
+i
+k = |DK3 + DK4| mod 28 + 28
+(19)
+where [·] represents the round-down operator, and SUM′
+t is calculated according to
+Equation (6).
+For complex image blocks, the initial values x0, y0, z0, and w0 and iteration number k
+are calculated as follows:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+x0 =
+c
+SUM′
+t (DK5
+L DK6) −[
+c
+SUM′
+t (DK5
+L DK6)]
+y0 =
+c
+SUM′
+t (DK6
+L DK7) −[
+c
+SUM′
+t (DK6
+L DK7)]
+z0 =
+c
+SUM′
+t (DK7
+L DK8) −[
+c
+SUM′
+t (DK7
+L DK8)]
+w0 =
+c
+SUM′
+t (DK8
+L DK5) −[
+c
+SUM′
+t (DK8
+L DK5)]
+k = |DK5 + DK6 + DK7 + DK8| mod 28 + 28
+(20)
+where the parameters x0, y0, z0, and w0 are the initial values of the 4D hyperchaotic system.
+To make the system exhibit hyperchaotic behavior, we set a = 0.1, b = 0.1, c = 14, p = −20,
+and q = −0.28 [89].
+For the overall RS image, a 1D chaotic function is used for encryption. Similarly, the
+values of the initial value x0, control variable µ, and iteration number k are calculated
+as follows:
+
+
+
+
+
+x0 = |DK7|
+232
+µ = (|DK8| mod 4) + x0
+k = |DK7 + DK8| mod 28 + 28
+(21)
+3.2.3. Encryption of Image Blocks with a Texture-Adaptive Strategy
+Because the information content in RS images is spatially unevenly distributed, the
+importance of local regions also differs. Local areas with less sensitive information may
+not require high security with slow encryption algorithms, whereas areas with abundant
+information require more robust protection. Therefore, this study uses encryption methods
+of different levels for various types of image blocks. As described in Section 2, the 1D
+LTS chaotic system is a one-dimensional chaotic system with simple structures and fast
+computing speed but a relatively small key space; therefore, it is used to encrypt simple
+image blocks in this study. The 2D LASM chaotic system is a two-dimensional chaotic
+system with a more complex system structure and better chaotic performance than one-
+dimensional chaotic systems, making it suitable for encrypting medium image blocks.
+The 4D hyperchaotic system is a high-dimensional chaotic system with four random
+variables, making its chaotic trajectory a more complex structure and computationally
+complex. However, with a larger key space and more robust anti-attack capability, it
+encrypts complex image blocks. Using the pseudo-random sequences generated from
+low-to high-dimensional chaotic systems to encrypt the corresponding-level image blocks,
+different encryption needs of other images can be met, achieving a better balance between
+encryption efficiency and security.
+For familiar color RS images, first, the different component matrices ItC of each image
+block It are extracted; then, corresponding-level encryption is performed to obtain the
+ciphertext image block I′
+t based on the image block category. To ensure the randomness of
+Remote Sens. 2025, 17, 2940
+13 of 27
+the chaotic system output sequences and avoid transient effects, random numbers are taken
+after k iterations of each chaotic system to generate random sequences. In the computation
+process, the encryption calculations for different image blocks operate independently;
+therefore, parallel computing can be utilized to enhance the efficiency significantly.
+•
+Encryption of simple image block: The pixel values of the component matrices of the
+image block are encrypted by replacing the pixel values. The encryption steps for
+a simple image block It component matrices ItC (i.e., ItR, ItG and ItB) are as follows:
+First, ItC is converted to a 1D image vector I′
+tC = [P1, P2, . . . , Pi], where pi denotes the
+value of a component of the i-th pixel. The maximum value of i is the number of rows
+multiplied by the number of columns, w m × n. Then, the 1D LTS initial parameters
+(x0, µ, and k) are calculated based on the passphrase P, related image block parameter
+SUM′
+t, and NumP using the method in Section 3.2. Further, according to Equation (16),
+the system is iterated (k + m × n) times to obtain a random sequence and remove the
+first k random numbers to obtain X = [x1, x2, . . . , xm×n]. Xs is processed according
+to Equation (22) to obtain the random vector X′ =
+
+x′
+1, x′
+2, . . . , x′
+m×n
+
+, and pixel-wise
+XOR is performed on I′
+tC and X′
+s to obtain the encrypted 1D vector I
+′′
+tC.
+(
+X′
+i = ⌈Xi × SUMt⌉mod 28
+ItC
+′′
+i = ItC′
+i ⊕X′
+i
+(22)
+where ⌈·⌉represents round-down operator, i = 1, 2, . . . , m × n.
+Finally, I
+′′
+tC is converted back to the 2D encrypted component matrix eItC, and all
+ciphertext matrices are merged to obtain the encrypted image block eIt. Figure 4 illustrates
+the encryption process for the simple image blocks.
+Figure 4. Encryption process for simple image blocks.
+•
+Encryption of medium image block: The encryption steps for the medium image block It
+are more complex compared to that for simple blocks; first, convert one component
+matrix ItC into a 1D image vector I′
+tC. According to the parameters SUM′
+t, NumP,
+and passphrase P, calculate the 2D LASM initial parameters (x0, y0, µ and k) using
+the method in Section 3.2. According to Equation (19), iterate the system (k + m × n)
+times to obtain two groups of random sequences; remove the first k random num-
+bers from each group to generate two 1D random sequences X = [x1, x2, . . . , xm×n]
+and Y = [y1, y2, . . . , ym×n]. Then, sort X in ascending order to obtain the sorted
+sequence X′ and index sequence X′′ , and perform a position permutation on I′
+tC ac-
+cording to Equation (23) to obtain I
+′′
+tC. Sequence Y obtains a new 1D random sequence
+Y′ =
+
+y′
+1, y′
+2, . . . , y′
+m×n
+
+. Perform pixel-wise XOR between Y′ and I
+′′
+tC according to
+Equation (23) to obtain the encrypted 1D vector I
+′′′
+tC:
+
+
+
+
+
+
+
+I
+′′
+tC =
+n
+I′
+tCX′′
+1 , I′
+tCX′′
+2 , . . . , I′
+tCX′′
+m×n
+o
+Y′
+i = ⌈Yi × SUMt⌉mod 28
+ItC
+′′′
+i = ItC
+′′
+i ⊕Y′
+i
+(23)
+Remote Sens. 2025, 17, 2940
+14 of 27
+where I
+′′
+tC denotes the position scrambling result based on the index sequence X′′ .
+Finally, convert I
+′′′
+tC is converted back to the 2D encrypted component matrix eItC and
+merge all ciphertext matrices to obtain the encrypted image block eIt. Figure 5 illustrates
+the encryption process for the medium image blocks.
+ 
+Figure 5. Encryption process for medium image blocks.
+•
+Encryption of complex image block: The encryption steps for complex image blocks
+also take the pixel values of the component matrices as encryption objects, but the
+process of generating scrambling and substitution matrices is more complicated. The
+encryption steps for difficult image block It’s one-component matrices ItC are as
+follows: First, calculate the 4D hyperchaotic system initial parameters (x0, y0, z0,
+w0 and k) based on SUM′
+t, umP, and passphrase P using the method in Section 3.2.
+According to Equation (20), iterate the system (k + m × n) to generate four groups of
+random sequences, remove the first k random numbers from each group, and use the
+remaining random numbers in each group to generate four m × n 2D random matrices
+X, Y, Z, and W, respectively. Then, perform one-to-one subtraction on matrices X
+and Y to obtain the index matrix XY, and perform one-to-one addition on Z and W to
+obtain the scrambling matrix ZW and the scramble matrix ItC according to the index
+matrix XY using the chaos magic transformation method (CMT) proposed by [91] to
+obtain the scrambled matrix I′
+tC. Further, perform pixel-wise XOR operations between
+I′
+tC and ZW according to Formula (24) to obtain the encrypted component matrix I
+′′
+tC.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+XY = X −Y
+ZW = Z + W
+I′
+tC =
+n
+ItCXY′′
+1 , ItCXY′′
+2 , . . . , ItCXY′′
+m×n
+o
+ZW′
+i = ⌈ZWi × SUMt⌉mod 28
+ItC
+′′
+i = ItC′
+i ⊕ZW′
+i
+(24)
+Finally, the encrypted component matrices are merged to obtain the ciphertext image
+block eIt. Figure 6 illustrates the encryption process for the complex image blocks.
+After encrypting the image blocks, the ciphertext image blocks must be stitched to-
+gether to form the ciphertext image cI. Because extension matrices and plaintext pixel
+values are also required for decryption, this section concatenates two information matrices
+Q and W to the ciphertext image to obtain cI′. There are two primary concerns with this
+approach. First, directly concatenating the plaintext information matrices may expose
+some details of the original remote sensing image, thereby increasing the risk of cracking
+the ciphertext image to some extent. Second, block-wise encryption introduces confusion
+within each image block and does not mitigate inter-block correlation. The ciphertext
+image, formed by stitching image blocks encrypted using different methods, exhibits no-
+ticeable block traces that can reveal information about the encryption methods to potential
+attackers. Therefore, to enhance security, an additional overall encryption operation on the
+stitched ciphertext image is necessary to conceal the block information and concatenate the
+plaintext information.
+Remote Sens. 2025, 17, 2940
+15 of 27
+ 
+Figure 6. Encryption process of complex image blocks.
+Specifically, the component matrices cI′
+C of cI′ are extracted, and the follow-
+ing encryption steps are performed on each component matrix: first, cI′
+C is con-
+verted to a 1D image vector cI′
+C =
+h
+p1, p2, . . . , p(M+addrow)×(N+addcol+2)
+i
+, where pi
+is the C component value of the i-th pixel. Then, the logistic initial parameters
+(x0, µ, and k) are calculated according to Equation (21). Furthermore, according to
+Equation (1), the system k + (M + addrow) × (N + addcol + 2) obtains a random se-
+quence, and the first k random numbers are removed to obtain a 1D random sequence
+X =
+h
+x1, x2, . . . , x(M+ addrow)×(N+addcol+2)
+i
+. Furthermore, X is processed according
+to formula 25 to obtain X′, and pixel-wise XOR is performed between cI′
+C and X′
+to generate the ciphertext matrix f cIC using Equation (26). Finally, the component
+ciphertext matrices are merged to obtain the encrypted RS image f cI.
+X′
+i =
+
+Xi × SUMIC
+
+mod 28
+(25)
+f cICi =
+(
+pi ⊕p(M+addrow)×(N+addcol+2) ⊕X′
+i, i = 1
+pi ⊕pi−1 ⊕X′
+i, i > 1
+(26)
+where SU M IC represents the sum of all raw pixel values of the component
+matrix IC.
+3.3. Encrypted Image Decryption
+The decryption process for an encrypted RS image is the reverse of the encryption
+process. First, global decryption is performed on the encrypted image, and the result
+is partitioned and inversely graded. Then, decryption is conducted separately on
+the simple, medium, and complex image blocks based on the specific information
+associated with each image block. Subsequently, the decrypted image blocks are
+spliced back together according to their original positions to obtain the final source
+RS image, as shown in Figure 7.
+Remote Sens. 2025, 17, 2940
+16 of 27
+ 
+Figure 7. Workflow of the decryption process.
+4. Experiment
+Remote sensing images of different sizes were used as experimental data to analyze the
+validity and security of the proposed encryption method. The algorithm was implemented
+in JDK8, and the experiments were carried out on a desktop computer with an Intel i5-8265U
+CPU, 8G memory, and Windows 10 operating system.
+4.1. Encryption of Image Blocks
+The following figures show the encryption and decryption results for remote sensing
+images of different sizes. Figure 8a–e show the original remote sensing images with
+dimensions of 256 × 256, 512 × 512, 1024 × 1024, 2048 × 2048, and 4096 × 4096, respectively.
+Figure 8f–j show the corresponding encrypted RS images. Figure 8k–o show the decrypted
+RS images. It can be observed from the encrypted images that the original RS images
+are encrypted into wholly random and meaningless images, from which no valuable
+information can be obtained visually. In addition, the proposed method is reversible, and
+the original images can be restored using the correct user passphrases. Figure 8p–t show
+the histograms of the source images and Figure 8u–y show the histograms of the encrypted
+Remote Sens. 2025, 17, 2940
+17 of 27
+images. The original R, G, and B histograms exhibit noticeable aggregated distributions,
+whereas those of the encrypted images are uniformly random. This indicates that the
+proposed method can effectively conceal the information and characteristics of the original
+data after encryption and can withstand statistical attacks to some extent. These results
+confirm that the proposed method can securely encrypt and faithfully recover remote
+sensing images while resisting statistical analysis.
+ 
+ 
+ 
+ 
+(a) 
+(b) 
+(c) 
+(d) 
+(e) 
+ 
+ 
+ 
+ 
+(f) 
+(g) 
+(h) 
+(i) 
+(j) 
+ 
+ 
+ 
+ 
+(k) 
+(l) 
+(m) 
+(n) 
+(o) 
+ 
+ 
+ 
+ 
+(p) 
+(q) 
+(r) 
+(s) 
+(t) 
+ 
+ 
+ 
+ 
+(u) 
+(v) 
+(w) 
+(x) 
+(y) 
+Figure 8. Image and the histogram analysis results. (a–e) Original RS images with dimensions of
+256 × 256, 512 × 512, 1024 × 1024, 2048 × 2048, and 4096 × 4096; (f–j) corresponding encrypted RS
+images; (k–o) decrypted RS images; (p–t) histograms of the original RS images (R, G, and B channels
+shown in red, green, and blue, respectively); (u–y) histograms of the encrypted RS images (R, G, and
+B channels shown in red, green, and blue, respectively).
+Remote Sens. 2025, 17, 2940
+18 of 27
+4.2. Comparative Analysis of Efficiency
+Comparative analyses with current chaos-based remote sensing image encryption
+methods were conducted to verify the efficiency of the proposed method. The runtimes
+for encrypting images using a simple 1D Logistic–Tent chaotic system (1D TLS) and a
+complex 4D hyperchaotic system were compared. The running-time comparisons of the
+different encryption methods are presented in Table 1. Compared to other methods, the
+proposed method has a faster encryption efficiency for large remote sensing images. When
+the data size is small, a global encryption method based on a simple chaotic system
+is the most efficient. However, for extensive data, by utilizing parallel processing and
+hierarchical encryption, the proposed block-wise hierarchical encryption strategy can take
+full advantage and achieve better efficiency compared to other global encryption methods.
+This demonstrates that the proposed method achieves superior efficiency for large-scale
+remote sensing images compared to existing chaos-based methods.
+Table 1. Comparison of the running times of different encryption methods (ms).
+Methods
+Size
+256 × 256
+512 × 512
+1024 × 1024
+2048 × 2048
+4096 × 4096
+Encryption method based on
+composite chaos [92]
+1996
+2248
+2974
+5163
+13,909
+Encryption method based on
+chaotic system and AES [46]
+2736
+3251
+4616
+8961
+32,163
+Global encryption method based
+on 1D LTS
+1916
+2005
+2697
+5159
+12,652
+Global encryption method based
+on 4D hyperchaotic system
+2075
+2366
+3003
+6378
+24,807
+Our method
+1947
+2249
+2649
+4480
+9014
+4.3. Key Security Analysis
+The security of the key can be analyzed from two aspects: key space size and key
+sensitivity. A secure encryption scheme must possess a key space large enough to render
+brute-force attacks computationally infeasible. The generally accepted standard is a key space
+larger than 2100. The key used in the proposed method mainly contains several parameters:
+(1) SUM′
+t, NumP related to the pixel value sum of image blocks, (2) derived key DK generated
+based on passphrase P, SUM′
+t, and NumP; and (3) initial parameters of chaotic systems
+obtained from DK. Assuming a double number precision of the computer is 10−15. Our
+method’s security is anchored by the highest-level 4-D hyperchaotic system, which requires
+at least four initial values as its secret key. The minimum key space of the 4D hyperchaotic
+system’s initial parameters is 1060, which is far larger than 2100 [27]. The total key space
+will be even larger considering the ranges of other parameters. When considering the ad-
+ditional control parameters of all three chaotic systems, the total key space is even larger.
+Therefore, the key space of the proposed method satisfies the security requirement and can
+resist brute-force attacks. Key sensitivity refers to imperceptible changes in the key value
+that lead to an entirely different encrypted image. In this section, the original passphrase is
+P= 1dbab33b8808edc0f5349ec7c20fe03847e5f4deca 8e37790cefe22c1ed6a76e, and a slightly
+changed version is P′= 1dbab33b8808edc0f5349ec7c20fe038 47e5f4deca8e37790cefe22c1ed6a76a.
+The encrypted images obtained using these two keys are described below. Figure 9c shows
+that even a slight change in the key can result in very different encrypted images. Therefore,
+the proposed method has a high key sensitivity. With a sufficiently large key space and
+high key sensitivity, the proposed method meets modern security requirements.
+Remote Sens. 2025, 17, 2940
+19 of 27
+ 
+ 
+ 
+(a) 
+(b) 
+(c) 
+Figure 9. Encrypted RS images generated by different key passwords. (a) The encryption result of P;
+(b) the encryption result of P; (c) difference between two encrypted images.
+4.4. Information Entropy Analysis
+Information entropy can be used to measure the uncertainty of random variables. An
+excellent image encryption method should result in encrypted images with high uncertainty
+and unpredictability of pixel values. The information entropy of the remote sensing images
+was calculated as follows: for images with 256 gray levels, the information entropy ranges
+from 0 to 8, and the ideal value for encrypted images should be as close to 8 as possible [27].
+Table 2 lists the information entropy of the remote sensing images before and after encryption.
+For different image sizes, the information entropy of the ciphertext images encrypted using
+the proposed method is very close to a maximum of 8. Therefore, ciphertext images exhibit
+high randomness and unpredictability. It should also be noted that the experimental data are
+derived from publicly available high-resolution remote sensing datasets, which inherently
+contain diverse land-cover types (e.g., urban, vegetation, and water). Because these are
+real-world large-scale images rather than synthetic samples, it is challenging to obtain cases
+with completely simple or completely complex textures. Nevertheless, the selected data
+ensure sufficient diversity of texture complexity across different scenes, thereby providing
+a representative and realistic evaluation scenario. In summary, high information entropy
+indicates that the proposed method can effectively enhance the randomness and uncertainty
+of encrypted remote sensing images. Thus, the ciphertext images exhibit high randomness
+and unpredictability, validating the robustness of our encryption.
+Table 2. Comparison of information entropy before and after encryption.
+Name
+Size
+Information Entropy of the Source
+RS Image
+Information Entropy of the Encrypted
+RS Image
+Test1.tif
+256 × 256
+5.66774
+7.99717
+Test2.tif
+512 × 512
+6.95465
+7.99929
+Test3.tif
+1024 × 1024
+5.94480
+7.99982
+Test4.tif
+2048 × 2048
+6.41338
+7.99995
+Test5.tif
+4096 × 4096
+6.42870
+7.99998
+4.5. Correlation Analysis of Adjacent Pixels
+Owing to the spatial continuity in sampling, the pixel values in the original remote
+sensing images exhibit a strong correlation in the horizontal, vertical, and diagonal direc-
+tions. To conceal the information in the original images and avoid leakage, remote sensing
+image encryption algorithms should eliminate or reduce the strong correlation between
+adjacent pixels in encrypted images as much as possible. The correlation coefficient of
+adjacent pixels in remote sensing images was calculated as follows [93]:
+Remote Sens. 2025, 17, 2940
+20 of 27
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Cr =
+1
+L∑L
+i=1 [xi −E(x)][yi −E(y)]
+√
+DX
+√
+DY
+E(x) = 1
+L
+L
+∑
+i=1
+xi
+E(y) = 1
+L
+L
+∑
+i=1
+yi
+DX = 1
+L
+L
+∑
+i=1
+(xi −E(x))2
+DY = 1
+L
+L
+∑
+i=1
+(yi −E(y))2
+(27)
+where x and y are the gray values of L pairs of adjacent pixels in the image, i represents the
+i-th pair of adjacent pixels, E(·) is the expected value, and DX and DY are the variances.
+A total of 3000 pairs of adjacent pixels (L = 3000) were selected in the horizontal, vertical,
+and diagonal directions to test the correlation between adjacent pixels before and after encryp-
+tion, as shown in Figure 10 and Table 3. The correlation coefficients are close to 1, and adjacent
+pixels are distributed as a straight line in the original image, indicating a strong correlation. In
+the encrypted image, adjacent pixels are randomly distributed, and the correlation coefficient
+is almost 0. Therefore, the proposed method effectively reduces the correlation between adja-
+cent pixels in encrypted remote sensing images. The results show that our method effectively
+eliminates adjacent-pixel correlations, thereby enhancing encryption security.
+ 
+ 
+(a) 
+(b) 
+Figure 10. Distribution of adjacent pixels in remote sensing images. (a) Correlation between adjacent
+pixels of the source image. (b) Correlation between adjacent pixels of the encrypted image.
+Table 3. Correlation between adjacent pixels before and after image encryption.
+Image
+Component
+Horizontal Direction
+Vertical Direction
+Diagonal Direction
+Source RS
+image
+R
+0.9569
+0.9393
+0.9363
+G
+0.9615
+0.9338
+0.9325
+B
+0.9826
+0.9698
+0.9672
+Encrypted RS
+image
+R
+−0.0181
+0.0149
+0.0141
+G
+−0.0069
+−0.0031
+−0.0090
+B
+0.0097
+−0.0163
+0.0028
+Remote Sens. 2025, 17, 2940
+21 of 27
+4.6. Analysis of Resistance to Differential Attack
+A differential attack is a chosen-plaintext attack. Since most remote sensing im-
+age encryption algorithms rely on a single key for encryption, attackers can modify
+the original image slightly to generate multiple images. By analyzing the impact of
+these small changes on the encrypted images, they can attempt to establish a relation-
+ship between the plaintext and ciphertext, thereby decrypting the ciphertext without
+the key.
+The ability to resist differential attacks can be evaluated by the number of
+pixel change rate (NPCR) and Unified Average Changing Intensity (UACI) [27]. Let
+P1, P2 be two original images with slight differences, and C1, C2 are their encrypted
+images.
+The NPCR measures the percentage of different pixels between C1 and C2,
+and UACI measures the average change rate of the pixel values. They are calculated
+as follows:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+NPCR(C1,C2) =
+∑M
+i=1 ∑N
+j=1 W(i, j)
+H
+× 100%
+W(i, j) =
+(
+0, i f C1(i, j) = C2(i, j)
+1, i f C1(i, j) ̸= C2(i, j)
+UACI(C1,C2) = 1
+H
+"
+M
+∑
+i=1
+N
+∑
+j=1
+|C1(i, j) −C2(i, j)|
+g
+#
+× 100%
+(28)
+where M, N are the image width and height, H = M × N, and g is the maximum pixel
+value in images P1 and P2.
+Wu et al. [94] derived the expectation and variance of NPCR and UACI for ideal
+encrypted images based on mathematical modeling and proposed standard values for
+different image sizes. The NPCR threshold N∗α under the significance level α can be
+calculated as follows: if NPCR > N∗α, the method passes the NPCR test. The UACI
+standard interval is (u∗−α, u∗+α), and the method passes the UACI test if the UACI is
+within (u∗−α, u∗+α). The formulas for calculating the NPCR and UACI thresholds are
+as follows:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+N∗α = g−Φ−1(α)√g
+H
+g+1
+u∗−α = µu −Φ−1  α
+2
+
+σu
+u∗+α = µu + Φ−1  α
+2
+
+σu
+µu =
+g+2
+3g+3
+σ2u = (g+2)(g2+2g+3)
+18(g+1)2gH
+(29)
+where α is typically set to 0.05.
+As shown in Table 4, the NPCR and UACI values of the proposed method are higher
+than the thresholds, indicating that it can resist differential attacks.
+Table 4. Results for NPCR and UACI.
+Size of the RS Image
+NPCR
+UACI
+256 × 256
+99.6205%
+33.5417%
+512 × 512
+99.6066%
+33.4559%
+1024 × 1024
+99.6054%
+33.4659%
+2048 × 2048
+99.6095%
+33.4514%
+4096 × 4096
+99.6112%
+33.4690%
+5. Discussion and Conclusions
+This study comprehensively addresses the challenges associated with the large data
+volume, multiple bands, and complex texture features of remote sensing images. Based
+on spatial partitioning, a region-level multigradation remote sensing image encryption
+Remote Sens. 2025, 17, 2940
+22 of 27
+method incorporating texture complexity is proposed. The experimental results robustly
+validate the method’s effectiveness, security, and efficiency.
+First, remote sensing images are partitioned and encrypted in a graded manner accord-
+ing to data size and texture complexity. Then, a separate encryption key is generated for
+each image block using the key generation method. With hierarchical partitioning and key
+generation, multidimensional chaotic systems encrypt simple, medium, and complex image
+blocks. Finally, the ciphertext image blocks are integrated. A fast XOR operation using a
+one-dimensional chaotic system is applied to the entire image to conceal the block infor-
+mation and reduce the inter-block pixel correlation. Experiments conducted on authentic
+remote sensing images validated their security and effectiveness. The experimental results
+comprehensively validated the proposed method’s security and efficiency. The method
+passed a suite of standard cryptographic tests, demonstrating high randomness (informa-
+tion entropy approaching the ideal value of 8), the elimination of strong pixel correlations,
+and proven resilience against statistical, brute-force, and differential attacks. A standout
+advantage is the method’s superior efficiency for large-scale data. For a 4096 × 4096 image,
+our method’s encryption time (9014 ms) was significantly shorter than those of competing
+approaches, which took up to 32,163 ms. This performance gain is directly attributed to the
+block-wise hierarchical strategy designed for parallel processing, confirming the method’s
+suitability for handling the massive datasets in modern remote sensing.
+The proposed method demonstrates a significant efficiency advantage in vector map
+data encryption compared with existing methods. It improves encryption efficiency by
+leveraging parallel computation in remote sensing image processing while maintaining
+security. Thus, it holds significant application value in the encrypted acquisition and
+transmission of remote sensing data.
+Despite its advantages, the proposed method has certain limitations. The hierarchical
+partitioning strategy for image blocks, which classifies them into simple, medium, and
+complex categories, relies on predefined thresholds based on prior knowledge and empiri-
+cism. These parameters may not be universally optimal for all remote sensing images with
+highly diverse textures and features. While the method supports manual annotation and
+user selection to enhance adaptability, this introduces a degree of subjectivity and reduces
+the potential for full automation. Additionally, the overall algorithm, with its multiple
+stages (partitioning, key generation, multilevel chaotic encryption, and XOR), is also more
+complex to implement than a single global encryption scheme.
+Another limitation lies in the key generation process, which partially depends on
+plaintext information through pixel-sum values of image blocks. Although these sums are
+never used directly as keys but are combined with a strong external passphrase-derived
+key and mapped into nonlinear chaotic systems—where minimal input differences yield
+drastically different outputs—this dependence may still pose a theoretical inference risk.
+Future work should therefore explore more robust key derivation, such as hash-chain
+strategies or local feature-based mechanisms, to further reduce plaintext dependence and
+strengthen security.
+Finally, although this study compares the proposed method with several chaos-based
+schemes, it does not provide systematic experimental comparisons with mainstream ap-
+proaches such as AES, DNA-based encryption, or compressive sensing. Because these
+methods have fundamentally different objectives and computational models—AES per-
+formance being largely hardware-dependent, DNA relying on specialized encoding, and
+compressive sensing integrating compression with encryption—a direct runtime com-
+parison would be neither fair nor conclusive. Instead, our framework is conceptually
+complementary and could potentially incorporate such techniques rather than compete
+Remote Sens. 2025, 17, 2940
+23 of 27
+with them directly. Nevertheless, broader comparative studies remain a critical direction
+for future research.
+In summary, the proposed approach offers distinct advantages but also highlights
+clear avenues for improvement. Future research should focus on developing adaptive
+partitioning mechanisms, possibly using machine learning to automatically classify im-
+age blocks and optimize encryption levels and exploring dynamic chaotic systems with
+parameters that evolve with image statistics to enhance unpredictability. Extending the
+framework to other geospatial data types, such as hyperspectral cubes or remote sensing
+video streams, also represents a valuable and challenging direction.
+Author Contributions: Conceptualization, J.T., X.J., C.D., M.D. and J.D.; methodology, J.T.; software,
+C.H. and Z.H.; validation, J.T., X.J., C.H., C.D., M.D., Z.H., J.D. and X.Z.; formal analysis, X.J., C.H.,
+C.D., Z.H., J.D. and X.Z.; investigation, C.D. and Z.H.; resources, M.D.; data curation, X.J., C.H., C.D.,
+Z.H., J.D. and X.Z.; writing—original draft preparation, C.D.; writing—review and editing, J.T., C.H.,
+C.D. and Z.H.; visualization, C.H., C.D. and Z.H.; supervision, J.T. and M.D.; project administration,
+J.T.; funding acquisition, J.T. and M.D. All authors have read and agreed to the published version of
+the manuscript.
+Funding: This study was supported by funds of the Science and Technology Innovation Program
+of Hunan Province (2024AQ2026), the National Key Research and Development Program of China
+(2024YFB3909601), National Natural Science Foundation of China (42430110, 42271462, 42471487),
+Hunan Provincial Natural Science Foundation of China (2025JJ20038, 2024JJ1009), the Scientific
+Research Fund of Hunan Provincial Education Department (24A0023), and the Funds of Open
+Projects of Hunan Engineering Research Center of Geographic information security and application
+(No. HNGISA2024001).
+Data Availability Statement: The data that support the findings of this study are available on
+figshare.com “https://figshare.com/s/c16dd109768716fc1cca (accessed on 20 August 2025)”.
+Acknowledgments: The authors gratefully acknowledge the comments from the editor and
+the reviewers.
+Conflicts of Interest: The authors declare no conflicts of interest.
+References
+1.
+Zhong, Y.; Ma, A.; Ong, Y.S.; Zhu, Z.; Zhang, L. Computational intelligence in optical remote sensing image processing. Appl. Soft
+Comput. 2018, 64, 75–93. [CrossRef]
+2.
+Tong, X.Y.; Xia, G.S.; Lu, Q.; Shen, H.; Li, S.; You, S.; Zhang, L. Learning transferable deep models for land-use classification with
+high-resolution remote sensing images. arXiv 2018, arXiv:1807.05713.
+3.
+Zhao, J.; Liu, H.; An, J.; Rahaman, M.M.; Chen, L.; Zhou, X.; Guan, Q. A Land Cover Classification Method for High-Resolution
+Remote Sensing Images Based on NDVI Deep Learning Fusion Network. Remote Sens. 2022, 14, 5455. [CrossRef]
+4.
+He, S.; Zhang, H.; Lin, S.; Zhang, Z.; Jiao, Z.; Zhao, H.; Zhang, X. Intelligent Mapping of Urban Forests from High-Resolution
+Remotely Sensed Imagery Using Object-Based U-Net-DenseNet-Coupled Network. Remote Sens. 2020, 12, 3928. [CrossRef]
+5.
+Myint, S.W.; Gober, P.; Brazel, A.; Grossman-Clarke, S.; Weng, Q. Per-pixel vs. object-based classification of urban land cover
+extraction using high spatial resolution imagery. Remote Sens. Environ. 2011, 115, 1145–1161. [CrossRef]
+6.
+Tong, X.-Y.; Xia, G.-S.; Lu, Q.; Shen, H.; Li, S.; You, S.; Zhang, L. Land-cover classification with high-resolution remote sensing
+images using transferable deep models. Remote Sens. Environ. 2020, 237, 111322. [CrossRef]
+7.
+Yuan, S.; Liu, C.; Liu, X.; Chen, Y.; Zhang, Y. Research advances in remote sensing monitoring of sea ice in the Bohai sea. Earth Sci.
+Inform. 2021, 14, 1729–1743. [CrossRef]
+8.
+Zhong, Y.; Wang, X.; Wang, S.; Zhang, L. Advances in spaceborne hyperspectral remote sensing in China. Geospat. Inf. Sci. 2021,
+24, 95–120. [CrossRef]
+9.
+Lechner, A.M.; Foody, G.M.; Boyd, D.S. Applications in Remote Sensing to Forest Ecology and Management. One Earth 2020, 2,
+405–412. [CrossRef]
+10.
+Xu, Q.; Dong, X.; Li, W.; Lu, P.; Zheng, W.; Zhu, Y. Remote sensing for landslide investigations: A progress report from China.
+Eng. Geol. 2023, 321, 107156. [CrossRef]
+Remote Sens. 2025, 17, 2940
+24 of 27
+11.
+Xu, Y.; Xu, Z.; Zhang, Y. Content security protection for remote sensing images integrating selective content encryption and
+digital fingerprint. J. Appl. Remote Sens. (JARS) 2012, 6, 063505. [CrossRef]
+12.
+Yuan, G.; Hao, Q. Digital watermarking secure scheme for remote sensing image protection. China Commun. 2020, 17,
+88–98. [CrossRef]
+13.
+Cao, W.; Leng, X.; Yu, T.; Gu, X.; Liu, Q. A Joint Encryption and Compression Algorithm for Multiband Remote Sensing Image
+Transmission. Sensors 2023, 23, 7600. [CrossRef]
+14.
+SaberiKamarposhti, M.; Ghorbani, A.; Yadollahi, M. A comprehensive survey on image encryption: Taxonomy, challenges, and
+future directions. Chaos Solitons Fractals 2024, 178, 114361. [CrossRef]
+15.
+Wang, X.; Guan, N. A novel chaotic image encryption algorithm based on extended Zigzag confusion and RNA operation.
+Opt. Laser Technol. 2020, 131, 106366. [CrossRef]
+16.
+Liu, Y.; Jiang, Z.; Xu, X.; Zhang, F.; Xu, J. Optical image encryption algorithm based on hyper-chaos and public-key cryptography.
+Opt. Laser Technol. 2020, 127, 106171. [CrossRef]
+17.
+Wang, X.; Li, Y. Chaotic image encryption algorithm based on hybrid multi-objective particle swarm optimization and DNA
+sequence. Opt. Lasers Eng. 2021, 137, 106393. [CrossRef]
+18.
+Hu, G.; Xiao, D.; Wang, Y.; Xiang, T. An image coding scheme using parallel compressive sensing for simultaneous compression-
+encryption applications. J. Vis. Commun. Image Represent. 2017, 44, 116–127. [CrossRef]
+19.
+Lai, X.; Lu, M.; Qin, L.; Han, J.; Fang, X. Asymmetric encryption and signature method with DNA technology. Sci. China Inf. Sci.
+2010, 53, 506–514. [CrossRef]
+20.
+Pawar, H.R.; Harkut, D.G. Classical and Quantum Cryptography for Image Encryption & Decryption. In Proceedings of the
+2018 International Conference on Research in Intelligent and Computing in Engineering (RICE), San Salvador, El Salvador,
+22–24 August 2018; IEEE: New York, NY, USA, 2018; pp. 1–4. [CrossRef]
+21.
+Shabir, M.Y.; Iqbal, A.; Mahmood, Z.; Ghafoor, A. Analysis of classical encryption techniques in cloud computing. Tsinghua Sci.
+Technol. 2016, 21, 102–113. [CrossRef]
+22.
+Sankpal, P.R.; Vijaya, P.A. Image Encryption Using Chaotic Maps: A Survey.
+In Proceedings of the 2014 Fifth Interna-
+tional Conference on Signal and Image Processing, Bangalore, India, 8 January 2014; IEEE: New York, NY, USA, 2014;
+pp. 102–107. [CrossRef]
+23.
+Geetha, S.; Punithavathi, P.; Infanteena, A.M.; Sindhu, S.S.S. A Literature Review on Image Encryption Techniques. Int. J. Inf.
+Secur. Priv. (IJISP) 2018, 12, 42–83. [CrossRef]
+24.
+Tiken, C.; Samli, R. A Comprehensive Review About Image Encryption Methods. Harran Üniversitesi Mühendislik Derg. 2022, 7,
+27–49. [CrossRef]
+25.
+Wang, X.; Feng, L.; Zhao, H. Fast image encryption algorithm based on parallel computing system. Inf. Sci. 2019, 486,
+340–358. [CrossRef]
+26.
+Suneja, K.; Dua, S.; Dua, M. A Review of Chaos based Image Encryption. In Proceedings of the 2019 3rd International Conference
+on Computing Methodologies and Communication (ICCMC), Erode, India, 27–29 March 2019; IEEE: New York, NY, USA, 2019;
+pp. 693–698. [CrossRef]
+27.
+Khan, J.S.; Kayhan, S.K. Chaos and compressive sensing based novel image encryption scheme. J. Inf. Secur. Appl. 2021,
+58, 102711. [CrossRef]
+28.
+Kumar, M.; Saxena, A.; Vuppala, S.S. A Survey on Chaos Based Image Encryption Techniques. In Multimedia Security Using
+Chaotic Maps: Principles and Methodologies; Hosny, K.M., Ed.; Springer International Publishing: Cham, Switzerland, 2020;
+pp. 1–26. [CrossRef]
+29.
+Noshadian, S.; Ebrahimzade, A.; Kazemitabar, S.J. Optimizing chaos based image encryption. Multimed. Tools Appl. 2018, 77,
+25569–25590. [CrossRef]
+30.
+Lee, W.-K.; Phan, R.C.-W.; Yap, W.-S.; Goi, B.-M. SPRING: A novel parallel chaos-based image encryption scheme. Nonlinear Dyn.
+2018, 92, 575–593. [CrossRef]
+31.
+Maazouz, M.; Toubal, A.; Bengherbia, B.; Houhou, O.; Batel, N. FPGA implementation of a chaos-based image encryption
+algorithm. J. King Saud Univ. Comput. Inf. Sci. 2022, 34 Pt B, 9926–9941. [CrossRef]
+32.
+Mansouri, A.; Wang, X. A novel block-based image encryption scheme using a new Sine powered chaotic map generator.
+Multimed. Tools Appl. 2021, 80, 21955–21978. [CrossRef]
+33.
+Ikbal, F.; Gopikakumari, R. Image block generation from block-based SMRT in colour image encryption and its performance
+analysis. J. King Saud Univ. Comput. Inf. Sci. 2022, 34 Pt A, 8459–8477. [CrossRef]
+34.
+Patel, S.; Vaish, A. Block based visually secure image encryption algorithm using 2D-Compressive Sensing and nonlinearity.
+Optik 2023, 272, 170341. [CrossRef]
+35.
+Faragallah, O.S.; Afifi, A.; El-Sayed, H.S.; Khedr, A.E.; Alharbi, A.G.; El-Shafai, W.; Abd El-Samie, F.E. Block-Based Optical Color
+Image Encryption Based on Double Random Phase Encoding. IEEE Access 2019, 7, 4184–4194. [CrossRef]
+Remote Sens. 2025, 17, 2940
+25 of 27
+36.
+Li, X.; Xiao, D.; Mou, H.; Lu, D.; Peng, M. A Compressive Sensing Based Image Encryption and Compression Algorithm With
+Identity Authentication and Blind Signcryption. IEEE Access 2020, 8, 211676–211690. [CrossRef]
+37.
+Sun, C.; Wang, E.; Zhao, B. Image Encryption Scheme with Compressed Sensing Based on a New Six-Dimensional Non-Degenerate
+Discrete Hyperchaotic System and Plaintext-Related Scrambling. Entropy 2021, 23, 291. [CrossRef] [PubMed]
+38.
+Sadkhan, S.B. Information Security based on DNA—Importance and Future Trends. In Proceedings of the 2021 International
+Conference on Communication & Information Technology (ICICT), Basrah, Iraq, 5–6 June 2021; IEEE: New York, NY, USA, 2021;
+pp. 310–314. [CrossRef]
+39.
+Akhavan, A.; Samsudin, A.; Akhshani, A. Cryptanalysis of an image encryption algorithm based on DNA encoding. Opt. Laser
+Technol. 2017, 95, 94–99. [CrossRef]
+40.
+Zhu, S.; Deng, X.; Zhang, W.; Zhu, C. Image Encryption Scheme Based on Newly Designed Chaotic Map and Parallel DNA
+Coding. Mathematics 2023, 11, 231. [CrossRef]
+41.
+Karmakar, J.; Mandal, M.K. Chaos-based Image Encryption using Integer Wavelet Transform. In Proceedings of the 2020 7th
+International Conference on Signal Processing and Integrated Networks (SPIN), Noida, India, 27–28 February 2020; IEEE: New
+York, NY, USA, 2020; pp. 756–760. [CrossRef]
+42.
+Xue, X.; Zhou, D.; Zhou, C. New insights into the existing image encryption algorithms based on DNA coding. PLoS ONE 2020,
+15, e0241184. [CrossRef]
+43.
+Arroyo, D.; Li, C.; Li, S.; Alvarez, G.; Halang, W.A. Cryptanalysis of an image encryption scheme based on a new total shuffling
+algorithm. Chaos Solitons Fractals 2009, 41, 2613–2616. [CrossRef]
+44.
+Han, F.; Hu, J.; Yu, X.; Wang, Y. Fingerprint images encryption via multi-scroll chaotic attractors. Appl. Math. Comput. 2007, 185,
+931–939. [CrossRef]
+45.
+Mazloom, S.; Eftekhari-Moghadam, A.M. Color image encryption based on Coupled Nonlinear Chaotic Map. Chaos Solitons
+Fractals 2009, 42, 1745–1754. [CrossRef]
+46.
+Zhang, X.; Wang, X. Remote-sensing image encryption algorithm using the advanced encryption standard. Appl. Sci. 2018,
+8, 1540. [CrossRef]
+47.
+Zhang, Y.; Li, X.; Hou, W. A fast image encryption scheme based on AES. In Proceedings of the 2017 2nd International
+Conference on Image, Vision and Computing (ICIVC), Chengdu, China, 2–4 June 2017; IEEE: New York, NY, USA, 2017;
+pp. 624–628. [CrossRef]
+48.
+Fridrich, J. Symmetric Ciphers Based on Two-Dimensional Chaotic Maps. Int. J. Bifurc. Chaos 1998, 08, 1259–1284. [CrossRef]
+49.
+Hua, Z.; Jin, F.; Xu, B.; Huang, H. 2D Logistic-Sine-coupling map for image encryption.
+Signal Process.
+2018, 149,
+148–161. [CrossRef]
+50.
+Zhu, H.; Zhao, Y.; Song, Y. 2D Logistic-Modulated-Sine-Coupling-Logistic Chaotic Map for Image Encryption. IEEE Access 2019,
+7, 14081–14098. [CrossRef]
+51.
+Pak, C.; Huang, L. A new color image encryption using combination of the 1D chaotic map. Signal Process. 2017, 138,
+129–137. [CrossRef]
+52.
+Xie, Y.; Yu, J.; Guo, S.; Ding, Q.; Wang, E. Image Encryption Scheme with Compressed Sensing Based on New Three-Dimensional
+Chaotic System. Entropy 2019, 21, 819. [CrossRef]
+53.
+Brahim, A.H.; Ali Pacha, A.; Hadj Said, N. Image encryption based on compressive sensing and chaos systems. Opt. Laser Technol.
+2020, 132, 106489. [CrossRef]
+54.
+Wang, X.; Liu, C.; Jiang, D. An efficient double-image encryption and hiding algorithm using a newly designed chaotic system
+and parallel compressive sensing. Inf. Sci. 2022, 610, 300–325. [CrossRef]
+55.
+Chai, X.; Zheng, X.; Gan, Z.; Han, D.; Chen, Y. An image encryption algorithm based on chaotic system and compressive sensing.
+Signal Process. 2018, 148, 124–144. [CrossRef]
+56.
+Zhou, N.; Pan, S.; Cheng, S.; Zhou, Z. Image compression–encryption scheme based on hyper-chaotic system and 2D compressive
+sensing. Opt. Laser Technol. 2016, 82, 121–133. [CrossRef]
+57.
+Huang, W.; Jiang, D.; An, Y.; Liu, L.; Wang, X. A novel double-image encryption algorithm based on Rossler hyperchaotic system
+and compressive sensing. IEEE Access 2021, 9, 41704–41716. [CrossRef]
+58.
+Yang, F.; Mou, J.; Liu, J.; Ma, C.; Yan, H. Characteristic analysis of the fractional-order hyperchaotic complex system and its image
+encryption application. Signal Process. 2020, 169, 107373. [CrossRef]
+59.
+Liu, X.; Tong, X.; Wang, Z.; Zhang, M. Uniform non-degeneracy discrete chaotic system and its application in image encryption.
+Nonlinear Dyn. 2022, 108, 653–682. [CrossRef]
+60.
+Ma, C.; Mou, J.; Xiong, L.; Banerjee, S.; Liu, T.; Han, X. Dynamical analysis of a new chaotic system: Asymmetric multistability,
+offset boosting control and circuit realization. Nonlinear Dyn. 2021, 103, 2867–2880. [CrossRef]
+61.
+Hua, Z.; Zhou, B.; Zhou, Y. Sine-transform-based chaotic system with FPGA implementation. IEEE Trans. Ind. Electron. 2017, 65,
+2557–2566. [CrossRef]
+Remote Sens. 2025, 17, 2940
+26 of 27
+62.
+Choi, U.S.; Cho, S.J.; Kim, J.G.; Kang, S.W.; Kim, H.D. Color image encryption based on programmable complemented maximum
+length cellular automata and generalized 3-D chaotic cat map. Multimed. Tools Appl. 2020, 79, 22825–22842. [CrossRef]
+63.
+Hua, Z.; Zhu, Z.; Yi, S.; Zhang, Z.; Huang, H. Cross-plane colour image encryption using a two-dimensional logistic tent modular
+map. Inf. Sci. 2021, 546, 1063–1083. [CrossRef]
+64.
+Liu, X.; Tong, X.; Wang, Z.; Zhang, M. Efficient high nonlinearity S-box generating algorithm based on third-order nonlinear
+digital filter. Chaos Solitons Fractals 2021, 150, 111109. [CrossRef]
+65.
+Hua, Z.; Yi, S.; Zhou, Y.; Li, C.; Wu, Y. Designing hyperchaotic cat maps with any desired number of positive Lyapunov exponents.
+IEEE Trans. Cybern. 2017, 48, 463–473. [CrossRef] [PubMed]
+66.
+Wang, C.; Fan, C.; Ding, Q. Constructing discrete chaotic systems with positive Lyapunov exponents. Int. J. Bifurc. Chaos 2018,
+28, 1850084. [CrossRef]
+67.
+Zang, H.; Liu, J.; Li, J. Construction of a class of high-dimensional discrete chaotic systems. Mathematics 2021, 9, 365. [CrossRef]
+68.
+Liu, X.; Tong, X.; Zhang, M.; Wang, Z.; Fan, Y. Image compression and encryption algorithm based on uniform non-degeneracy
+chaotic system and fractal coding. Nonlinear Dyn. 2023, 111, 8771–8798. [CrossRef]
+69.
+Qin, M. Yet new extreme multi-stable chaotic system. IEEE Trans. Circuits Syst. II Express Briefs 2023, 70, 3124–3128.
+70.
+Ali, A.M.A.; Sriram, S.; Natiq, H.; Ahmadi, A.; Rajagopal, K.; Jafari, S. A novel multi-stable sinusoidal chaotic map with
+spectacular behaviors. Commun. Theor. Phys. 2023, 75, 115001. [CrossRef]
+71.
+Huang, L.; Li, C.; Liu, J.; Zhong, Y.; Zhang, H. A novel 3D non-degenerate hyperchaotic map with ultra-wide parameter range
+and coexisting attractors periodic switching. Nonlinear Dyn. 2024, 112, 2289–2304. [CrossRef]
+72.
+Ma, X.; Mou, J.; Xiong, L.; Banerjee, S.; Cao, Y.; Wang, J. A novel chaotic circuit with coexistence of multiple attractors and state
+transition based on two memristors. Chaos Solitons Fractals 2021, 152, 111363. [CrossRef]
+73.
+Liu, X.; Sun, K.; Wang, H.; He, S. A class of novel discrete memristive chaotic map.
+Chaos Solitons Fractals 2023,
+174, 113791. [CrossRef]
+74.
+Di Marco, M.; Forti, M.; Pancioni, L.; Tesi, A. New class of discrete-time memristor circuits: First integrals, coexisting attractors
+and bifurcations without parameters. Int. J. Bifurc. Chaos 2024, 34, 2450001. [CrossRef]
+75.
+Wang, X.; Su, Y. Image encryption based on compressed sensing and DNA encoding. Signal Process. Image Commun. 2021,
+95, 116246. [CrossRef]
+76.
+Liu, L.; Zhang, Q.; Wei, X. A RGB image encryption algorithm based on DNA encoding and chaos map. Comput. Electr. Eng. 2012,
+38, 1240–1248. [CrossRef]
+77.
+Wang, Q.; Zhang, Q.; Wei, X. Image encryption algorithm based on DNA biological properties and chaotic systems. In Proceedings
+of the 2010 IEEE Fifth International Conference on Bio-Inspired Computing: Theories and Applications (BIC-TA), Liverpool, UK,
+8–10 September 2010; IEEE: New York, NY, USA, 2020; pp. 132–136. [CrossRef]
+78.
+Gasimov, V.A.; Mammadov, J.I. DNA-based image encryption algorithm. IOP Conf. Ser. Mater. Sci. Eng. 2020, 734, 012162. [CrossRef]
+79.
+Zhang, T.; McCarthy, Z.; Jow, O.; Lee, D.; Chen, X.; Goldberg, K.; Abbeel, P. Deep Imitation Learning for Complex Manipulation
+Tasks from Virtual Reality Teleoperation. In Proceedings of the 2018 IEEE International Conference on Robotics and Automation
+(ICRA), Brisbane, Australia, 21–25 May 2018; IEEE: New York, NY, USA, 2018; pp. 5628–5635. [CrossRef]
+80.
+Xu, X.; Chen, S. A remote sensing image encryption method combining chaotic neuron and tent map. J. Comput. (Taipei) 2021, 32,
+108–123.
+81.
+Ye, G.; Huang, X. A novel block chaotic encryption scheme for remote sensing image. Multimed. Tools Appl. 2016, 75,
+11433–11446. [CrossRef]
+82.
+Bensikaddour, E.-H.; Bentoutou, Y.; Taleb, N. Embedded implementation of multispectral satellite image encryption using a
+chaos-based block cipher. J. King Saud Univ. Comput. Inf. Sci. 2020, 32, 50–56. [CrossRef]
+83.
+Yu, Z.; Yang, Z. Method of remote sensing image detail encryption based on symmetry algorithm. J. Ambient. Intell. Humaniz.
+Comput. 2021. [CrossRef]
+84.
+Sun, X.; Zhu, Q.; Qin, Q. A Multilevel Convolution Pyramid Semantic Fusion Framework for High-Resolution Remote Sensing
+Image Scene Classification and Annotation. IEEE Access 2021, 9, 18195–18208. [CrossRef]
+85.
+Liu, X.; Peng, C. Content-Oriented Multilevel Security Authorization of Images. In Proceedings of the 2014 International
+Conference on Mechatronics, Control and Electronic Engineering (MCE-14), Shenyang, China, 29–31 March 2014; Atlantis Press:
+Dordrecht, The Netherlands, 2014; pp. 301–304. [CrossRef]
+86.
+Pavithra, L.; Sharmila, T.S. Optimized Feature Integration and Minimized Search Space in Content Based Image Retrieval.
+Procedia Comput. Sci. 2019, 165, 691–700. [CrossRef]
+87.
+Zhou, Y.; Bao, L.; Chen, C.P. A new 1D chaotic system for image encryption. Signal Process. 2014, 97, 172–182. [CrossRef]
+88.
+Hua, Z.; Zhou, Y. Image encryption using 2D Logistic-adjusted-Sine map. Inf. Sci. 2016, 339, 237–253. [CrossRef]
+89.
+Laarem, G. A new 4-D hyper chaotic system generated from the 3-D Rösslor chaotic system, dynamical analysis, chaos stabilization
+via an optimized linear feedback control, it’s fractional order model and chaos synchronization using optimized fractional order
+sliding mode control. Chaos Solitons Fractals 2021, 152, 111437. [CrossRef]
+Remote Sens. 2025, 17, 2940
+27 of 27
+90.
+Ertaul, L.; Kaur, M.; Gudise, V.A.K.R. Implementation and performance analysis of pbkdf2, bcrypt, scrypt algorithms. In
+Proceedings of the International Conference on Wireless Networks (ICWN), Las Vegas, NV, USA, 25–28 July 2016; The Steering
+Committee of The World Congress in Computer Science, Computer Engineering and Applied Computing (WorldComp): Las
+Vegas, NV, USA, 2016; p. 66.
+91.
+Hua, Z.; Zhou, Y.; Pun, C.-M.; Chen, C.P. 2D Sine Logistic modulation map for image encryption. Inf. Sci. 2015, 297,
+80–94. [CrossRef]
+92.
+Cai, Q. A Secure Image Encryption Algorithm Based on Composite Chaos Theory. Trait. Du Signal 2019, 36, 31–36. [CrossRef]
+93.
+Nan, S.; Feng, X.; Wu, Y.; Zhang, H. Remote sensing image compression and encryption based on block compressive sensing and
+2D-LCCCM. Nonlinear Dyn. 2022, 108, 2705–2729. [CrossRef]
+94.
+Wu, Y.; Noonan, J.P.; Agaian, S. NPCR and UACI randomness tests for image encryption. Cyber J. Multidiscip. J. Sci. Technol. J. Sel.
+Areas Telecommun. (JSAT) 2011, 1, 31–38.
+Disclaimer/Publisher’s Note: The statements, opinions and data contained in all publications are solely those of the individual
+author(s) and contributor(s) and not of MDPI and/or the editor(s). MDPI and/or the editor(s) disclaim responsibility for any injury to
+people or property resulting from any ideas, methods, instructions or products referred to in the content.
